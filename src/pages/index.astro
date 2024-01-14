@@ -1,53 +1,91 @@
 ---
-import '@/styles/globals.css'
+import '@/styles/globals.css';
 import Layout from '../layouts/Layout.astro';
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 
-import { CalendarIcon } from "@radix-ui/react-icons"
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { LockClosedIcon } from '@radix-ui/react-icons';
 
-const apiKey = import.meta.env.MAPS_SDK_KEY
-const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V25yhQRsA2NsrXtDp8&key=${apiKey}`
+const apiKey = import.meta.env.MAPS_SDK_KEY;
+const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V25yhQRsA2NsrXtDp8&key=${apiKey}`;
 ---
 
 <Layout>
-	<main class="flex flex-col gap-3 mt-4">
-		<Card>
-			<CardHeader>
-			  <CardTitle>Ayşe</CardTitle>
-			</CardHeader>
-			<CardContent>
-			  <p>Senin için bir sürpriz hazırladım, ama önce aşağıdaki konuma gitmen lazım 😘</p>
-			</CardContent>
-			<CardFooter className='gap-2'>
-			  <CalendarIcon />
-			  <p>5 saat önce</p>
-			</CardFooter>
-		  </Card>
+  <main class="flex flex-col gap-3 my-4 items-center">
+    <Card>
+      <CardHeader>
+        <CardTitle>Ayşe</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>
+          Senin için bir sürpriz hazırladım, ama önce aşağıdaki konuma gitmen
+          lazım 😘
+        </p>
+      </CardContent>
+      <CardFooter className="gap-2">
+        <CalendarIcon />
+        <p>5 saat önce</p>
+      </CardFooter>
+    </Card>
 
-		  <Button className='w-full bg-indigo-500'>Haritayı Gizle</Button>
+    <Button className="w-full bg-indigo-500">Haritayı Gizle</Button>
 
-		  <iframe height="450" style="border:0" loading="lazy" allowfullscreen src={mapSrc}></iframe>
+    <iframe
+      height="450"
+      style="border:0"
+      loading="lazy"
+      allowfullscreen
+      src={mapSrc}
+      class="w-full"></iframe>
 
-		  <div class="w-full h-[200px] bg-gray-600 rounded"></div>
-		  <Button className='w-full'>Paylaş</Button>
-	</main>
+    <div class="module w-full h-[450px] p-4">
+      <div
+        class="module-inside flex flex-col justify-center items-center gap-2"
+      >
+        <Button>
+          <LockClosedIcon className="mr-2 h-4 w-4" />İçerik Kilitli
+        </Button>
+        <Card className="p-2">
+          <CardContent className="pb-0 text-center">
+            İçeriği görmek için konuma gitmelisin!
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+
+    <Button className="w-full">Paylaş</Button>
+  </main>
 </Layout>
 
 <style>
-	gmp-map {
-  height: 100%;
-}
+  .module {
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
+  .module::before {
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-image: url('/sample-selfie.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(20px);
+  }
+
+  .module-inside {
+    position: relative;
+  }
 </style>
