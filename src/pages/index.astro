@@ -1,0 +1,36 @@
+---
+import '@/styles/globals.css'
+import Layout from '../layouts/Layout.astro';
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+import { CalendarIcon } from "@radix-ui/react-icons"
+---
+
+<Layout>
+	<main class="flex flex-col gap-3 mt-4">
+		<Card>
+			<CardHeader>
+			  <CardTitle>Ayşe</CardTitle>
+			</CardHeader>
+			<CardContent>
+			  <p>Senin için bir sürpriz hazırladım, ama önce aşağıdaki konuma gitmen lazım 😘</p>
+			</CardContent>
+			<CardFooter className='gap-2'>
+			  <CalendarIcon />
+			  <p>5 saat önce</p>
+			</CardFooter>
+		  </Card>
+
+		  <Button className='w-full bg-indigo-500'>Haritayı Gizle</Button>
+		  <div class="w-full h-[200px] bg-gray-400 rounded"></div>
+		  <div class="w-full h-[200px] bg-gray-600 rounded"></div>
+		  <Button className='w-full'>Paylaş</Button>
+	</main>
+</Layout>
