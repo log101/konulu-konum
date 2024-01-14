@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/card"
 
 import { CalendarIcon } from "@radix-ui/react-icons"
+
+const apiKey = import.meta.env.MAPS_SDK_KEY
+const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V25yhQRsA2NsrXtDp8&key=${apiKey}`
 ---
 
 <Layout>
@@ -29,8 +32,22 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 		  </Card>
 
 		  <Button className='w-full bg-indigo-500'>Haritayı Gizle</Button>
-		  <div class="w-full h-[200px] bg-gray-400 rounded"></div>
+
+		  <iframe height="450" style="border:0" loading="lazy" allowfullscreen src={mapSrc}></iframe>
+
 		  <div class="w-full h-[200px] bg-gray-600 rounded"></div>
 		  <Button className='w-full'>Paylaş</Button>
 	</main>
 </Layout>
+
+<style>
+	gmp-map {
+  height: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+</style>
