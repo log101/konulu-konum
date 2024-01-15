@@ -12,14 +12,11 @@ import {
 
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { LockClosedIcon } from '@radix-ui/react-icons';
-
-const apiKey = import.meta.env.MAPS_SDK_KEY;
-const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V25yhQRsA2NsrXtDp8&key=${apiKey}`;
 ---
 
 <Layout>
   <main class="flex flex-col gap-3 my-4 items-center">
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Ayşe</CardTitle>
       </CardHeader>
@@ -35,15 +32,7 @@ const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V
       </CardFooter>
     </Card>
 
-    <Button className="w-full bg-indigo-500">Haritayı Gizle</Button>
-
-    <iframe
-      height="450"
-      style="border:0"
-      loading="lazy"
-      allowfullscreen
-      src={mapSrc}
-      class="w-full"></iframe>
+    <div id="map" class="w-full h-[450px]"></div>
 
     <div class="module w-full h-[450px] p-4">
       <div
@@ -63,6 +52,21 @@ const mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:ChIJpSDn9V
     <Button className="w-full">Paylaş</Button>
   </main>
 </Layout>
+
+<script>
+  let map: google.maps.Map;
+  async function initMap(): Promise<void> {
+    const { Map } = (await google.maps.importLibrary(
+      'maps'
+    )) as google.maps.MapsLibrary;
+    map = new Map(document.getElementById('map') as HTMLElement, {
+      center: { lat: -34.397, lng: 150.644 },
+      zoom: 8,
+    });
+  }
+
+  initMap();
+</script>
 
 <style>
   .module {
