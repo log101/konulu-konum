@@ -23,10 +23,7 @@ import LocationButton from '@/components/LockedContent';
         <CardTitle>Ayşe</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>
-          Senin için bir sürpriz hazırladım, ama önce aşağıdaki konuma gitmen
-          lazım 😘
-        </p>
+        <p>Aşağıdaki konuma gitmen</p>
       </CardContent>
       <CardFooter className="gap-2">
         <CalendarIcon />
@@ -43,6 +40,7 @@ import LocationButton from '@/components/LockedContent';
 </Layout>
 
 <script>
+  // TODO: Move script to a seperate file
   import distance from '../utils/distance';
 
   let map: google.maps.Map, infoWindow: google.maps.InfoWindow;
@@ -65,11 +63,33 @@ import LocationButton from '@/components/LockedContent';
     const currentLocationIcon = document.createElement('img');
     currentLocationIcon.src = '/blue-dot.png';
 
+    const targetLocationIcon = document.createElement('img');
+    targetLocationIcon.src = '/goal.png';
+    targetLocationIcon.height = 32;
+    targetLocationIcon.width = 32;
+
+    const parser = new DOMParser();
+    // A marker with a custom inline SVG.
+    const pinSvgString =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-goal"><path d="M12 13V2l8 4-8 4"/><path d="M20.55 10.23A9 9 0 1 1 8 4.94"/><path d="M8 10a5 5 0 1 0 8.9 2.02"/></svg>';
+
+    const pinSvg = parser.parseFromString(
+      pinSvgString,
+      'image/svg+xml'
+    ).documentElement;
+
     const currentLocationMarkerView = new AdvancedMarkerElement({
       map,
       position: { lat: 37.434, lng: -122.082 },
       content: currentLocationIcon,
       title: 'Current Location',
+    });
+
+    const targetLocationMarkerView = new AdvancedMarkerElement({
+      map,
+      position: { lat: 37.434, lng: -122.082 },
+      content: pinSvg,
+      title: 'A marker using a custom PNG Image',
     });
 
     infoWindow = new google.maps.InfoWindow();
@@ -95,16 +115,19 @@ import LocationButton from '@/components/LockedContent';
               lng: position.coords.longitude,
             };
 
-            const mapPos = map.getCenter();
-
             const totalDistanceInKM = distance(
               pos.lat,
               pos.lng,
-              mapPos?.lat(),
-              mapPos?.lng()
+              41.045227057192136,
+              28.98791224002213
             ).toFixed(0);
 
             currentLocationMarkerView.position = pos;
+
+            targetLocationMarkerView.position = {
+              lat: 41.045227057192136,
+              lng: 28.98791224002213,
+            };
 
             locationInfo.textContent = `Aradaki Mesafe: ${totalDistanceInKM} km`;
           },
