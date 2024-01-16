@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/card';
 
 import { CalendarIcon } from '@radix-ui/react-icons';
+import { LockClosedIcon } from '@radix-ui/react-icons';
 
 import '../styles/locked-page.css';
-import LocationButton from '@/components/LockedContent';
 ---
 
 <Layout>
@@ -36,10 +36,23 @@ import LocationButton from '@/components/LockedContent';
 
     <div id="map" class="w-full h-[450px]"></div>
 
-    <LocationButton client:load />
-  </main>
+    <div class="module w-full h-[450px] p-4">
+      <div
+        class="module-inside flex flex-col justify-center items-center gap-2"
+      >
+        <Button>
+          <LockClosedIcon className="mr-2 h-4 w-4" />İçerik Kilitli
+        </Button>
+        <Card className="p-2">
+          <CardContent className="pb-0 text-center">
+            İçeriği görmek için konuma gitmelisin!
+          </CardContent>
+        </Card>
+      </div>
+    </div>
 
-  <Button className="w-full">Paylaş</Button>
+    <Button className="w-full">Paylaş</Button>
+  </main>
 </Layout>
 
 <script>
@@ -104,6 +117,8 @@ import LocationButton from '@/components/LockedContent';
               mapPos?.lng()
             ).toFixed(0);
 
+            if (totalDistanceInKM === '0') window.location.assign('/unlocked');
+
             currentLocationMarkerView.position = pos;
 
             locationInfo.textContent = `Aradaki Mesafe: ${totalDistanceInKM} km`;
@@ -155,3 +170,29 @@ import LocationButton from '@/components/LockedContent';
 
   initMap();
 </script>
+
+<style>
+  .module {
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module::before {
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-image: url('/sample-selfie.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(20px);
+  }
+
+  .module-inside {
+    position: relative;
+  }
+</style>
