@@ -15,6 +15,13 @@ var targetLocationIcon = L.icon({
 
 L.marker(TARGET_LOCATION, { icon: targetLocationIcon }).addTo(map);
 
+var circle = L.circle(TARGET_LOCATION, {
+    color: 'blue',
+    fillColor: '#30f',
+    fillOpacity: 0.2,
+    radius: 50
+}).addTo(map);
+
 var currentLocationIcon = L.icon({
     iconUrl: 'blue-dot.png',
     iconSize: [32, 32],
@@ -92,3 +99,39 @@ L.control.targetLocation = function (opts) {
 L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
 
 L.control.targetLocation({ position: 'bottomleft' }).addTo(map);
+
+navigator.permissions
+    .query({ name: "geolocation" })
+    .then((permissionStatus) => {
+        if (permissionStatus === 'granted') {
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    }
+
+                    console.log('The map location is' + pos)
+                },
+                () => null,
+                { enableHighAccuracy: true, maximumAge: 60000, timeout: 57000 }
+            )
+        } else {
+            permissionStatus.onchange = () => {
+                if (permissionStatus.state === 'granted') {
+                    navigator.geolocation.watchPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            }
+
+                            console.log('The map location is' + pos)
+                        },
+                        () => null,
+                        { enableHighAccuracy: true, maximumAge: 60000, timeout: 57000 }
+                    )
+                }
+            };
+        }
+    });

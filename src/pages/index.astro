@@ -13,17 +13,36 @@ import {
 import { CalendarIcon } from '@radix-ui/react-icons';
 
 import '../styles/locked-page.css';
-import LocationButton from '@/components/LockedContent';
+import LockedContent from '@/components/LockedContent';
+import { Separator } from '@/components/ui/separator';
 ---
 
 <Layout>
-  <main class="flex flex-col gap-3 my-4 items-center">
+  <main class="flex flex-col gap-4">
+    <div>
+      <h1
+        class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+      >
+        Konulu Konum
+      </h1>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        Arkadaşınız size bir fotoğraf ve bir not bıraktı. Fakat fotoğrafı
+        görebilmeniz için aşağıdaki konuma gitmeniz gerekiyor. Konuma
+        yaklaştığınızda butona basıp fotoğrafı görüntüleyebilirsiniz.
+      </p>
+    </div>
+
+    <Separator />
+
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Abdurrahman</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Aşağıdaki konuma gitmen gerekiyor.</p>
+        <p>
+          Hacı sana çok özel bir sürpriz hazırladık, aşağıdaki konuma muhakak
+          git.
+        </p>
       </CardContent>
       <CardFooter className="gap-2">
         <CalendarIcon />
@@ -31,11 +50,16 @@ import LocationButton from '@/components/LockedContent';
       </CardFooter>
     </Card>
 
-    <div id="map" class="w-full h-[450px]"></div>
+    <LockedContent client:load />
 
-    <LocationButton client:load />
+    <div id="map" class="w-full h-[450px] rounded"></div>
+
+    <Button className="w-full">Paylaş</Button>
+    <div class="flex justify-center">
+      <p class="text-muted-foreground">
+        Fotoğrafın kilidi şu ana dek <b>2</b> kez açıldı
+      </p>
+    </div>
   </main>
-
-  <Button className="w-full">Paylaş</Button>
   <script src="../scripts/initMap.js"></script>
 </Layout>
