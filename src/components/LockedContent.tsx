@@ -11,25 +11,30 @@ const LocationButton = () => {
   const [atTarget, setAtTarget] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
   const [hasPermission, setHasPermission] = useState(false)
+  const [watchId, setWatchId] = useState<number>()
 
   const startWatchingLocation = () => {
     setHasPermission(true)
-    navigator.geolocation.watchPosition(
-      (position: GeolocationPosition) => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
+    if (!watchId) {
+      const id = navigator.geolocation.watchPosition(
+        (position: GeolocationPosition) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
 
-        const totalDistanceInKM = distance(pos.lat, pos.lng, pos.lat, pos.lng).toFixed(0)
+          const totalDistanceInKM = distance(pos.lat, pos.lng, pos.lat, pos.lng).toFixed(0)
 
-        if (totalDistanceInKM === "0") {
-          setAtTarget(true)
-        }
-      },
-      () => null,
-      { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 }
-    )
+          if (totalDistanceInKM === "0") {
+            setAtTarget(true)
+          }
+        },
+        () => null,
+        { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 }
+      )
+
+      setWatchId(id)
+    }
   }
 
   useEffect(() => {

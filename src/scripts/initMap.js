@@ -29,19 +29,6 @@ var currentLocationIcon = L.icon({
 
 let currentLocationMarker;
 
-function onLocationFound(e) {
-    var radius = e.accuracy;
-
-    if (currentLocationMarker) {
-        currentLocationMarker.setLatLng(e.latlng);
-    } else {
-        currentLocationMarker = L.marker(e.latlng, { icon: currentLocationIcon });
-        currentLocationMarker.addTo(map);
-    }
-}
-
-map.on('locationfound', onLocationFound);
-
 function onLocationError(e) {
     alert(e.message);
 }
@@ -57,7 +44,7 @@ L.Control.GoToCurrentLocation = L.Control.extend({
         locationButton.classList.add('custom-map-control-button');
 
         locationButton.addEventListener('click', () => {
-            map.locate({ setView: true, maxZoom: 16 });
+            map.setView(currentLocationMarker.getLatLng(), 18);
         });
 
         return locationButton;
@@ -77,7 +64,7 @@ L.Control.GoToTargetLocation = L.Control.extend({
         locationButton.classList.add('custom-map-control-button');
 
         locationButton.addEventListener('click', () => {
-            map.setView(TARGET_LOCATION, 13);
+            map.setView(TARGET_LOCATION, 18);
         });
 
         return locationButton;
@@ -103,7 +90,7 @@ L.control.targetLocation({ position: 'bottomleft' }).addTo(map);
 navigator.permissions
     .query({ name: "geolocation" })
     .then((permissionStatus) => {
-        if (permissionStatus === 'granted') {
+        if (permissionStatus.state === 'granted') {
             navigator.geolocation.watchPosition(
                 (position) => {
                     const pos = {
@@ -111,10 +98,15 @@ navigator.permissions
                         lng: position.coords.longitude
                     }
 
-                    console.log('The map location is' + pos)
+                    if (currentLocationMarker) {
+                        currentLocationMarker.setLatLng(pos);
+                    } else {
+                        currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
+                        currentLocationMarker.addTo(map);
+                    }
                 },
                 () => null,
-                { enableHighAccuracy: true, maximumAge: 60000, timeout: 57000 }
+                { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
             )
         } else {
             permissionStatus.onchange = () => {
@@ -126,10 +118,15 @@ navigator.permissions
                                 lng: position.coords.longitude
                             }
 
-                            console.log('The map location is' + pos)
+                            if (currentLocationMarker) {
+                                currentLocationMarker.setLatLng(pos);
+                            } else {
+                                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
+                                currentLocationMarker.addTo(map);
+                            }
                         },
                         () => null,
-                        { enableHighAccuracy: true, maximumAge: 60000, timeout: 57000 }
+                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
                     )
                 }
             };
