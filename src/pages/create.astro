@@ -1,0 +1,113 @@
+---
+import '@/styles/globals.css';
+import Layout from '../layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
+import { CalendarIcon } from '@radix-ui/react-icons';
+
+import '../styles/locked-page.css';
+import LockedContent from '@/components/LockedContent';
+import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+---
+
+<Layout>
+  <main class="flex flex-col gap-8">
+    <div>
+      <h1
+        class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+      >
+        Konulu Konum
+      </h1>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        3 basit adımda fotoğraflarınızı ve videolarınızı <b
+          >yalnızca belirli bir konumda</b
+        > açılacak şekilde kilitleyin:
+      </p>
+    </div>
+
+    <div>
+      <h2
+        class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
+      >
+        1. Fotoğraf Seçimi
+      </h2>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
+        fotoğraf yalnızca belirli bir konumda açılabilecek bir hale getirilecek.
+      </p>
+      <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
+        <Input id="picture" type="file" />
+        <p class="text-sm text-muted-foreground">
+          Galerinizden bir fotoğraf seçin.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <h2
+        class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
+      >
+        2. Fotoğrafın Açılacağı Konum
+      </h2>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        Haritadan bir nokta seçin. Bağlantıyı gönderdiğiniz kişi bu konuma
+        gittiği zaman seçtiğiniz fotoğrafı görebilecek.
+      </p>
+      <div>
+        <div id="map" class="w-full h-[450px] rounded mt-4"></div>
+        <Button className="w-full bg-green-600 hover:bg-green-500">
+          Konumu Seç
+        </Button>
+      </div>
+    </div>
+
+    <div>
+      <h2
+        class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
+      >
+        3. Fotoğraf Açıklaması
+      </h2>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
+        fotoğraf yalnızca belirli bir konumda açılabilecek bir hale getirilecek.
+      </p>
+      <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
+        <Textarea placeholder="Açıklamanızı buraya yazınız." />
+        <p class="text-sm text-muted-foreground">Bir açıklama girin.</p>
+      </div>
+    </div>
+
+    <div>
+      <h2
+        class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
+      >
+        4. (Zorunlu Değil) Bağlantı Şifresi
+      </h2>
+      <p class="leading-7 [&:not(:first-child)]:mt-6">
+        Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
+        fotoğraf yalnızca belirli bir konumda açılabilecek bir hale getirilecek.
+      </p>
+      <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
+        <Label htmlFor="password">Şifre</Label>
+        <Input id="password" type="password" />
+        <p class="text-sm text-muted-foreground">
+          Bağlantınız için bir şifre girin, açıklama ve fotoğrafın görülmesi
+          için önce bu şifrenin girilmesi istenecek.
+        </p>
+      </div>
+    </div>
+
+    <Button className="w-full">Bağlantıyı Oluştur</Button>
+  </main>
+  <script src="../scripts/initMap.js"></script>
+</Layout>
