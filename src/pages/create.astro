@@ -65,9 +65,18 @@ import { Textarea } from '@/components/ui/textarea';
       </p>
       <div>
         <div id="map" class="w-full h-[450px] rounded mt-4"></div>
-        <Button className="w-full bg-green-600 hover:bg-green-500">
-          Konumu Seç
-        </Button>
+        <p class="text-xl mt-2">
+          <span class="font-semibold">Seçilen Konum:</span>
+        </p>
+        <p class="text-lg" id="coordinates">
+          Henüz konum seçmediniz, konum seçmek için haritadaki bir noktaya
+          basınız.
+        </p>
+        <p
+          class="text-lg text-muted-foreground mt-2"
+          id="location-selected-confirmation"
+        >
+        </p>
       </div>
     </div>
 
@@ -109,5 +118,5 @@ import { Textarea } from '@/components/ui/textarea';
 
     <Button className="w-full">Bağlantıyı Oluştur</Button>
   </main>
-  <script src="../scripts/initMap.js"></script>
+  <script src="../scripts/initSelectionMap.js"></script>
 </Layout>
