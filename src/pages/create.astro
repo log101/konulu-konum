@@ -72,6 +72,7 @@ import { Textarea } from '@/components/ui/textarea';
           >
           </p>
         </div>
+        <input name="geolocation" id="geolocation-input" hidden />
       </div>
 
       <div>
@@ -81,7 +82,10 @@ import { Textarea } from '@/components/ui/textarea';
           3. Fotoğraf Açıklaması
         </h2>
         <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
-          <Textarea placeholder="Açıklamanızı buraya yazınız." name="desc" />
+          <Textarea
+            placeholder="Açıklamanızı buraya yazınız."
+            name="description"
+          />
           <p class="text-sm text-muted-foreground">
             Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
             görünecek.

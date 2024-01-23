@@ -43,6 +43,8 @@ L.Control.GoToCurrentLocation = L.Control.extend({
 
         locationButton.classList.add('custom-map-control-button');
 
+        locationButton.name = 'select-location-button'
+
         locationButton.addEventListener('click', () => {
             map.setView(currentLocationMarker.getLatLng(), 18);
         });

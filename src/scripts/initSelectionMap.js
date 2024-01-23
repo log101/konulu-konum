@@ -36,10 +36,14 @@ L.Control.GoToCurrentLocation = L.Control.extend({
 
         locationButton.classList.add('custom-map-control-button');
 
-        locationButton.addEventListener('click', (e) => {
-            map.setView(currentLocationMarker.getLatLng(), 18);
-            e.stopPropagation()
-        });
+        locationButton.type = 'button'
+
+        locationButton.addEventListener('click', (ev) => {
+            if (currentLocationMarker) {
+                map.setView(currentLocationMarker.getLatLng(), 12);
+            }
+            L.DomEvent.stopPropagation(ev)
+        })
 
         return locationButton;
     },
@@ -115,5 +119,6 @@ map.on('click', (e) => {
 
     const pos = targetLocationMarker.getLatLng()
     document.getElementById('coordinates').innerText = `${pos.lat}. Enlem, ${pos.lng}. Boylam`
+    document.getElementById('geolocation-input').value = `${pos.lat},${pos.lng}`
     document.getElementById('location-selected-confirmation').innerText = "Konum seçildi, bir sonraki adıma geçebilirsiniz."
 })
