@@ -23,8 +23,6 @@ export const POST: APIRoute = async ({ request }) => {
   const description = data.get("description")
   const geolocation = data.get("geolocation")
 
-  console.log(image, description, geolocation)
-
   if (!image || !geolocation) {
     return new Response(null, {
       status: 400,
