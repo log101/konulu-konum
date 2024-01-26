@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import '@/styles/globals.css';
 import Layout from '../layouts/Layout.astro';
 import { Button } from '@/components/ui/button';
@@ -109,7 +111,7 @@ import { Textarea } from '@/components/ui/textarea';
 
     const formData = new FormData(e.target as HTMLFormElement);
 
-    const response = await fetch(`/create-url`, {
+    const response = await fetch(`/api/content`, {
       method: 'POST',
       body: formData,
     });

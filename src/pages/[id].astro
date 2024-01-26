@@ -15,6 +15,14 @@ import { CalendarIcon } from '@radix-ui/react-icons';
 import '../styles/locked-page.css';
 import LockedContent from '@/components/LockedContent';
 import { Separator } from '@/components/ui/separator';
+
+const { id } = Astro.params;
+
+const res = await fetch(`http://localhost:4321/api/content?id=${id}`);
+
+const data = await res.json();
+
+console.log(data);
 ---
 
 <Layout>
@@ -39,10 +47,7 @@ import { Separator } from '@/components/ui/separator';
         <CardTitle>Abdurrahman</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>
-          Hacı sana çok özel bir sürpriz hazırladık, aşağıdaki konuma muhakak
-          git.
-        </p>
+        <p>{data.description}</p>
       </CardContent>
       <CardFooter className="gap-2">
         <CalendarIcon />
@@ -50,9 +55,14 @@ import { Separator } from '@/components/ui/separator';
       </CardFooter>
     </Card>
 
-    <LockedContent client:load />
+    <LockedContent imageUrl={data.blob_url} client:load />
 
-    <div id="map" class="w-full h-[450px] rounded"></div>
+    <div
+      id="map"
+      class="w-full h-[450px] rounded"
+      data-target-location={data.loc}
+    >
+    </div>
 
     <Button className="w-full">Paylaş</Button>
     <div class="flex justify-center">

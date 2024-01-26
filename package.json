@@ -27,6 +27,7 @@
     "clsx": "^2.1.0",
     "kysely": "^0.26.0",
     "lucide-react": "^0.309.0",
+    "nanoid": "^5.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^2.2.0",

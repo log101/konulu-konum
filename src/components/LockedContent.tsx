@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 
 import "../styles/locked-content.css"
 
-const LocationButton = () => {
+const LocationButton = ({ imageUrl = "#" }: { imageUrl?: string }) => {
   const [atTarget, setAtTarget] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
   const [hasPermission, setHasPermission] = useState(false)
@@ -47,48 +47,56 @@ const LocationButton = () => {
   }, [])
 
   if (contentVisible) {
-    return <div className='module-unlocked w-full h-[450px] p-4'></div>
+    return (
+      <div className='w-full h-[475px] p-4 flex justify-center'>
+        <img src={imageUrl} />
+      </div>
+    )
   } else {
     return (
-      <div className='module w-full h-[450px] p-4'>
+      <div className='w-full h-[475px] p-4'>
         {atTarget ? (
-          <div className='module-inside flex flex-col justify-center items-center gap-2'>
-            <div>
+          <div className='flex flex-col justify-center items-center image-wrapper'>
+            <img src={imageUrl} className='blur-lg h-[450px]' />
+
+            <div className='flex flex-col justify-center gap-2 overlay'>
               <Button size={"lg"} onClick={() => setContentVisible(true)}>
                 <LockOpen1Icon className='mr-2 h-4 w-4' />
                 İçeriğin Kilidi Açıldı
               </Button>
-            </div>
 
-            <Card className='p-2'>
-              <CardContent className='pb-0 text-center'>İçeriği görmek için butona bas!</CardContent>
-            </Card>
+              <Card className='p-2'>
+                <CardContent className='pb-0 text-center'>İçeriği görmek için butona bas!</CardContent>
+              </Card>
+            </div>
           </div>
         ) : (
-          <div className='module-inside flex flex-col justify-center items-center gap-4'>
-            <Button size={"lg"}>
-              <LockClosedIcon className='mr-2 h-4 w-4' /> İçerik Kilitli
-            </Button>
+          <div className='flex flex-col justify-center items-center image-wrapper'>
+            <img src={imageUrl} className='blur-lg h-[450px]' />
+            <div className='flex flex-col justify-center gap-2 overlay'>
+              <Button size='lg'>
+                <LockClosedIcon className='mr-2 h-4 w-4' /> İçerik Kilitli
+              </Button>
+              <Card className='p-2'>
+                {hasPermission ? (
+                  <CardContent className='pb-0 text-center'>İçeriği görmek için konuma gitmelisin!</CardContent>
+                ) : (
+                  <div className='flex flex-col gap-2'>
+                    <CardContent className='pb-0 text-center'>
+                      Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
+                    </CardContent>
 
-            <Card className='p-2'>
-              {hasPermission ? (
-                <CardContent className='pb-0 text-center'>İçeriği görmek için konuma gitmelisin!</CardContent>
-              ) : (
-                <div className='flex flex-col gap-2'>
-                  <CardContent className='pb-0 text-center'>
-                    Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
-                  </CardContent>
-
-                  <Button
-                    size={"sm"}
-                    className='bg-green-700 hover:bg-green-600'
-                    onClick={() => startWatchingLocation()}
-                  >
-                    Konum İzni Ver
-                  </Button>
-                </div>
-              )}
-            </Card>
+                    <Button
+                      size={"sm"}
+                      className='bg-green-700 hover:bg-green-600'
+                      onClick={() => startWatchingLocation()}
+                    >
+                      Konum İzni Ver
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            </div>
           </div>
         )}
       </div>

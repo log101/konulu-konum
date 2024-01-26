@@ -1,4 +1,6 @@
-const TARGET_LOCATION = [41.01907795861253, 29.01715377829709];
+const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
+
+const TARGET_LOCATION = data.coordinates
 
 var map = L.map('map').setView(TARGET_LOCATION, 13);
 
