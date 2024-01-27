@@ -9,20 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
 import { CalendarIcon } from '@radix-ui/react-icons';
 
-import '../styles/locked-page.css';
 import LockedContent from '@/components/LockedContent';
 import { Separator } from '@/components/ui/separator';
+
+import '../styles/locked-page.css';
+import type { ContentTable } from '@/lib/db';
+
+type Content = Omit<ContentTable, 'id' | 'url'>;
 
 const { id } = Astro.params;
 
 const res = await fetch(`http://localhost:4321/api/content?id=${id}`);
 
-const data = await res.json();
-
-console.log(data);
+const data: Content | null = res.status === 200 ? await res.json() : null;
 ---
 
 <Layout>
@@ -47,7 +48,7 @@ console.log(data);
         <CardTitle>Abdurrahman</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>{data.description}</p>
+        <p>{data?.description}</p>
       </CardContent>
       <CardFooter className="gap-2">
         <CalendarIcon />
@@ -55,16 +56,16 @@ console.log(data);
       </CardFooter>
     </Card>
 
-    <LockedContent imageUrl={data.blob_url} client:load />
+    <LockedContent imageUrl={data?.blob_url} client:load />
 
     <div
       id="map"
       class="w-full h-[450px] rounded"
-      data-target-location={data.loc}
+      data-target-location={data?.loc}
     >
     </div>
 
-    <Button className="w-full">Paylaş</Button>
+    <Button className="w-full text-lg" size="lg">Paylaş</Button>
     <div class="flex justify-center">
       <p class="text-muted-foreground">
         Fotoğrafın kilidi şu ana dek <b>2</b> kez açıldı

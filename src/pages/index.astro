@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import '../styles/locked-page.css';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { ReloadIcon } from '@radix-ui/react-icons';
 ---
 
 <Layout>
@@ -95,7 +96,16 @@ import { Textarea } from '@/components/ui/textarea';
         </div>
       </div>
 
-      <Button className="w-full" type="submit" id="submit-button">
+      <Button
+        className="w-full text-lg"
+        type="submit"
+        id="submit-button"
+        size="lg"
+      >
+        <ReloadIcon
+          className="mr-2 h-4 w-4 animate-spin hidden"
+          id="submit-button-reload"
+        />
         Bağlantıyı Oluştur
       </Button>
     </form>
@@ -104,21 +114,28 @@ import { Textarea } from '@/components/ui/textarea';
 </Layout>
 
 <script>
-  import type { PutBlobResult } from '@vercel/blob';
-
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
 
+    const submitButton = document.getElementById(
+      'submit-button'
+    ) as HTMLButtonElement;
+    const reloadIcon = document.getElementById(
+      'submit-button-reload'
+    ) as HTMLElement;
+
+    submitButton.disabled = true;
+    reloadIcon.classList.toggle('hidden');
+
     const formData = new FormData(e.target as HTMLFormElement);
 
-    const response = await fetch(`/api/content`, {
+    await fetch(`/api/content`, {
       method: 'POST',
       body: formData,
     });
 
-    const newBlob = (await response.json()) as PutBlobResult;
-
-    console.log(newBlob);
+    reloadIcon.classList.toggle('hidden');
+    submitButton.disabled = false;
   };
 
   document.getElementById('sample-form')!.onsubmit = handleSubmit;

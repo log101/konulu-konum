@@ -59,8 +59,8 @@ const LocationButton = ({ imageUrl = "#" }: { imageUrl?: string }) => {
           <div className='flex flex-col justify-center items-center image-wrapper'>
             <img src={imageUrl} className='blur-lg h-[450px]' />
 
-            <div className='flex flex-col justify-center gap-2 overlay'>
-              <Button size={"lg"} onClick={() => setContentVisible(true)}>
+            <div className='flex flex-col justify-center gap-4 overlay'>
+              <Button size='lg' className='text-md' onClick={() => setContentVisible(true)}>
                 <LockOpen1Icon className='mr-2 h-4 w-4' />
                 İçeriğin Kilidi Açıldı
               </Button>
@@ -73,8 +73,8 @@ const LocationButton = ({ imageUrl = "#" }: { imageUrl?: string }) => {
         ) : (
           <div className='flex flex-col justify-center items-center image-wrapper'>
             <img src={imageUrl} className='blur-lg h-[450px]' />
-            <div className='flex flex-col justify-center gap-2 overlay'>
-              <Button size='lg'>
+            <div className='flex flex-col justify-center gap-4 overlay'>
+              <Button size='lg' className='text-md'>
                 <LockClosedIcon className='mr-2 h-4 w-4' /> İçerik Kilitli
               </Button>
               <Card className='p-2'>
@@ -87,8 +87,8 @@ const LocationButton = ({ imageUrl = "#" }: { imageUrl?: string }) => {
                     </CardContent>
 
                     <Button
-                      size={"sm"}
-                      className='bg-green-700 hover:bg-green-600'
+                      size='sm'
+                      className='bg-green-700 hover:bg-green-600 text-md'
                       onClick={() => startWatchingLocation()}
                     >
                       Konum İzni Ver
