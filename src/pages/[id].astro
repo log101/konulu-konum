@@ -21,7 +21,7 @@ type Content = Omit<ContentTable, 'id' | 'url'>;
 
 const { id } = Astro.params;
 
-const res = await fetch(`http://localhost:4321/api/content?id=${id}`);
+const res = await fetch(`${import.meta.env.HOME_URL}/api/content?id=${id}`);
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
 ---
