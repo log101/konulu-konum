@@ -111,6 +111,8 @@ import { ReloadIcon } from '@radix-ui/react-icons';
     </form>
   </main>
   <script src="../scripts/initSelectionMap.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
 </Layout>
 
 <script>
@@ -129,13 +131,34 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 
     const formData = new FormData(e.target as HTMLFormElement);
 
-    await fetch(`/api/content`, {
+    const res = await fetch(`/api/content`, {
       method: 'POST',
       body: formData,
     });
 
     reloadIcon.classList.toggle('hidden');
     submitButton.disabled = false;
+
+    if (res.status === 200) {
+      const data = await res.json();
+
+      if (data.url) location.assign('/' + data.url);
+    } else {
+      // @ts-ignore
+      Toastify({
+        text: 'Konulu konum oluşturulamadı, lütfen tekrar deneyin.',
+        duration: 3000,
+        gravity: 'top', // `top` or `bottom`
+        position: 'center', // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+          background: 'black',
+          borderRadius: '6px',
+          margin: '16px',
+        },
+        onClick: function () {}, // Callback after click
+      }).showToast();
+    }
   };
 
   document.getElementById('sample-form')!.onsubmit = handleSubmit;

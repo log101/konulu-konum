@@ -2,6 +2,27 @@ const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
 
 const TARGET_LOCATION = data.coordinates
 
+let watchId = -1;
+function startWatchingLocation() {
+    watchId = navigator.geolocation.watchPosition(
+        (position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }
+
+            if (currentLocationMarker) {
+                currentLocationMarker.setLatLng(pos);
+            } else {
+                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
+                currentLocationMarker.addTo(map);
+            }
+        },
+        () => null,
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
+    )
+}
+
 var map = L.map('map').setView(TARGET_LOCATION, 13);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -48,7 +69,12 @@ L.Control.GoToCurrentLocation = L.Control.extend({
         locationButton.name = 'select-location-button'
 
         locationButton.addEventListener('click', () => {
-            map.setView(currentLocationMarker.getLatLng(), 18);
+            if (watchId === -1) {
+                startWatchingLocation()
+                map.setView(currentLocationMarker.getLatLng(), 12);
+            } else {
+                map.setView(currentLocationMarker.getLatLng(), 12);
+            }
         });
 
         return locationButton;
@@ -91,48 +117,3 @@ L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
 
 L.control.targetLocation({ position: 'bottomleft' }).addTo(map);
 
-navigator.permissions
-    .query({ name: "geolocation" })
-    .then((permissionStatus) => {
-        if (permissionStatus.state === 'granted') {
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    }
-
-                    if (currentLocationMarker) {
-                        currentLocationMarker.setLatLng(pos);
-                    } else {
-                        currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                        currentLocationMarker.addTo(map);
-                    }
-                },
-                () => null,
-                { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
-            )
-        } else {
-            permissionStatus.onchange = () => {
-                if (permissionStatus.state === 'granted') {
-                    navigator.geolocation.watchPosition(
-                        (position) => {
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            }
-
-                            if (currentLocationMarker) {
-                                currentLocationMarker.setLatLng(pos);
-                            } else {
-                                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                                currentLocationMarker.addTo(map);
-                            }
-                        },
-                        () => null,
-                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
-                    )
-                }
-            };
-        }
-    });

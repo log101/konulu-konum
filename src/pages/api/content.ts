@@ -44,13 +44,13 @@ export const POST: APIRoute = async ({ request }) => {
       description: description?.toString() ?? "",
       loc: `SRID=4326;POINT(${pos[0]} ${pos[1]})`
     })
-    .returning("blob_url")
+    .returning("url")
     .executeTakeFirst()
 
-  if (res?.blob_url) {
+  if (res?.url) {
     return new Response(
       JSON.stringify({
-        message: "Succesfully added content"
+        url: res.url
       })
     )
   } else {
