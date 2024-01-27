@@ -9,6 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
   const data = await request.formData()
 
   const image = data.get("selected-photo") as File
+  const author = data.get("author")
   const description = data.get("description")
   const geolocation = data.get("geolocation")
 
@@ -41,6 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
     .values({
       url: `${newUrl.slice(0, 3)}-${newUrl.slice(3, 7)}-${newUrl.slice(7)}`,
       blob_url: blob.url,
+      author: author?.toString() ?? "",
       description: description?.toString() ?? "",
       loc: `SRID=4326;POINT(${pos[0]} ${pos[1]})`
     })
@@ -76,7 +78,7 @@ export const GET: APIRoute = async ({ request }) => {
   try {
     const content = await db
       .selectFrom("contents")
-      .select(({ fn }) => ["blob_url", fn<string>("ST_AsGeoJSON", ["loc"]).as("loc"), "description"])
+      .select(({ fn }) => ["blob_url", fn<string>("ST_AsGeoJSON", ["loc"]).as("loc"), "description", "author"])
       .where("url", "=", contentId)
       .executeTakeFirst()
 

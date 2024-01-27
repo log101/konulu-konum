@@ -9,5 +9,6 @@ export interface ContentTable {
   url: string
   blob_url: string
   loc: string
+  author: string
   description: string
 }

@@ -45,7 +45,7 @@ const data: Content | null = res.status === 200 ? await res.json() : null;
 
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Abdurrahman</CardTitle>
+        <CardTitle>{data?.author}</CardTitle>
       </CardHeader>
       <CardContent>
         <p>{data?.description}</p>

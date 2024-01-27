@@ -9,6 +9,7 @@ import '../styles/locked-page.css';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Label } from '@/components/ui/label';
 ---
 
 <Layout>
@@ -84,15 +85,27 @@ import { ReloadIcon } from '@radix-ui/react-icons';
         >
           3. Fotoğraf Açıklaması
         </h2>
-        <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
-          <Textarea
-            placeholder="Açıklamanızı buraya yazınız."
-            name="description"
-          />
-          <p class="text-sm text-muted-foreground">
-            Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
-            görünecek.
-          </p>
+        <div class="grid w-full max-w-sm items-center gap-2 mt-4">
+          <div class="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="location-author">Gönderici</Label>
+            <Input
+              id="location-author"
+              name="author"
+              placeholder="İsminizi buraya yazınız."
+            />
+          </div>
+          <div class="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="location-description">Açıklama</Label>
+            <Textarea
+              placeholder="Açıklamanızı buraya yazınız."
+              name="description"
+              id="location-description"
+            />
+            <p class="text-sm text-muted-foreground">
+              Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
+              görünecek.
+            </p>
+          </div>
         </div>
       </div>
 

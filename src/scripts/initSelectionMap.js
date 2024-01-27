@@ -22,6 +22,27 @@ var currentLocationIcon = L.icon({
 
 let currentLocationMarker;
 
+let watchId = -1;
+function startWatchingLocation() {
+    watchId = navigator.geolocation.watchPosition(
+        (position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }
+
+            if (currentLocationMarker) {
+                currentLocationMarker.setLatLng(pos);
+            } else {
+                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
+                currentLocationMarker.addTo(map);
+            }
+        },
+        () => null,
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
+    )
+}
+
 function onLocationError(e) {
     alert(e.message);
 }
@@ -39,7 +60,10 @@ L.Control.GoToCurrentLocation = L.Control.extend({
         locationButton.type = 'button'
 
         locationButton.addEventListener('click', (ev) => {
-            if (currentLocationMarker) {
+            if (watchId === -1) {
+                startWatchingLocation()
+                map.setView(currentLocationMarker.getLatLng(), 12);
+            } else {
                 map.setView(currentLocationMarker.getLatLng(), 12);
             }
             L.DomEvent.stopPropagation(ev)
@@ -76,28 +100,6 @@ navigator.permissions
                 () => null,
                 { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
             )
-        } else {
-            permissionStatus.onchange = () => {
-                if (permissionStatus.state === 'granted') {
-                    navigator.geolocation.watchPosition(
-                        (position) => {
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            }
-
-                            if (currentLocationMarker) {
-                                currentLocationMarker.setLatLng(pos);
-                            } else {
-                                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                                currentLocationMarker.addTo(map);
-                            }
-                        },
-                        () => null,
-                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
-                    )
-                }
-            };
         }
     });
 
