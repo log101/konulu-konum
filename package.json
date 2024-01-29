@@ -25,6 +25,7 @@
     "astro": "^4.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dayjs": "^1.11.10",
     "kysely": "^0.26.0",
     "lucide-react": "^0.309.0",
     "nanoid": "^5.0.4",

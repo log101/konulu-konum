@@ -11,4 +11,5 @@ export interface ContentTable {
   loc: string
   author: string
   description: string
+  created_at: Generated<string>
 }

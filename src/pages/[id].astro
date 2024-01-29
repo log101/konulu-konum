@@ -1,5 +1,7 @@
 ---
 import '@/styles/globals.css';
+import '../styles/locked-page.css';
+
 import Layout from '../layouts/Layout.astro';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,12 +12,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { CalendarIcon } from '@radix-ui/react-icons';
-
 import LockedContent from '@/components/LockedContent';
 import { Separator } from '@/components/ui/separator';
-
-import '../styles/locked-page.css';
 import type { ContentTable } from '@/lib/db';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import localeTR from 'dayjs/locale/tr';
 
 type Content = Omit<ContentTable, 'id' | 'url'>;
 
@@ -24,6 +26,13 @@ const { id } = Astro.params;
 const res = await fetch(`${import.meta.env.HOME_URL}/api/content?id=${id}`);
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
+
+dayjs.locale(localeTR);
+
+dayjs.extend(relativeTime);
+
+// @ts-expect-error Generated<string> is string
+const dateFromNow = dayjs(data?.created_at).fromNow();
 ---
 
 <Layout>
@@ -52,7 +61,7 @@ const data: Content | null = res.status === 200 ? await res.json() : null;
       </CardContent>
       <CardFooter className="gap-2">
         <CalendarIcon />
-        <p>5 saat önce</p>
+        <p>{dateFromNow}</p>
       </CardFooter>
     </Card>
 

@@ -78,7 +78,13 @@ export const GET: APIRoute = async ({ request }) => {
   try {
     const content = await db
       .selectFrom("contents")
-      .select(({ fn }) => ["blob_url", fn<string>("ST_AsGeoJSON", ["loc"]).as("loc"), "description", "author"])
+      .select(({ fn }) => [
+        "blob_url",
+        fn<string>("ST_AsGeoJSON", ["loc"]).as("loc"),
+        "description",
+        "author",
+        "created_at"
+      ])
       .where("url", "=", contentId)
       .executeTakeFirst()
 
