@@ -62,7 +62,7 @@ L.Control.GoToCurrentLocation = L.Control.extend({
     onAdd: function (map) {
         const locationButton = document.createElement('button');
 
-        locationButton.textContent = 'Konumuma Git';
+        locationButton.textContent = 'Konum İzni Ver';
 
         locationButton.classList.add('custom-map-control-button');
 
@@ -71,7 +71,7 @@ L.Control.GoToCurrentLocation = L.Control.extend({
         locationButton.addEventListener('click', () => {
             if (watchId === -1) {
                 startWatchingLocation()
-                map.setView(currentLocationMarker.getLatLng(), 12);
+                locationButton.textContent = 'Konumuma Git';
             } else {
                 map.setView(currentLocationMarker.getLatLng(), 12);
             }
