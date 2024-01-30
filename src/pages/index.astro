@@ -99,22 +99,31 @@ import { Label } from '@/components/ui/label';
         >
           3. Fotoğraf Açıklaması
         </h2>
-        <div class="grid w-full max-w-sm items-center gap-2 mt-4">
-          <div class="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="location-author">Gönderici</Label>
+        <div class="grid w-full max-w-md items-center gap-2 mt-4">
+          <div class="grid w-full items-center gap-1.5">
+            <Label htmlFor="location-author" className="lg:text-lg text-md">
+              Gönderici
+            </Label>
             <Input
               id="location-author"
               name="author"
               placeholder="İsminizi buraya yazınız."
+              className="lg:text-lg text-md"
               required
             />
           </div>
-          <div class="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="location-description">Açıklama</Label>
+          <div class="grid w-full items-center gap-1.5">
+            <Label
+              htmlFor="location-description"
+              className="lg:text-lg text-md"
+            >
+              Açıklama
+            </Label>
             <Textarea
               placeholder="Açıklamanızı buraya yazınız."
               name="description"
               id="location-description"
+              className="lg:text-lg text-md"
               required
             />
             <p class="text-sm text-muted-foreground">
