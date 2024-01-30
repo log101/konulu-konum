@@ -12,4 +12,5 @@ export interface ContentTable {
   author: string
   description: string
   created_at: Generated<string>
+  unlocked_counter: Generated<number>
 }

@@ -3,7 +3,7 @@ import type { APIRoute } from "astro"
 import { createKysely } from "@vercel/postgres-kysely"
 import { customAlphabet } from "nanoid"
 
-import type { Database } from "../../lib/db"
+import type { Database } from "@/lib/db"
 
 export const POST: APIRoute = async ({ request }) => {
   const data = await request.formData()
@@ -79,11 +79,13 @@ export const GET: APIRoute = async ({ request }) => {
     const content = await db
       .selectFrom("contents")
       .select(({ fn }) => [
+        "id",
         "blob_url",
         fn<string>("ST_AsGeoJSON", ["loc"]).as("loc"),
         "description",
         "author",
-        "created_at"
+        "created_at",
+        "unlocked_counter"
       ])
       .where("url", "=", contentId)
       .executeTakeFirst()
