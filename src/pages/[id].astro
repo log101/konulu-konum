@@ -17,7 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import type { ContentTable } from '@/lib/db';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import localeTR from 'dayjs/locale/tr';
+import utc from 'dayjs/plugin/utc';
 
 type Content = Omit<ContentTable, 'url'>;
 
@@ -29,12 +29,12 @@ const res = await fetch(
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
 
-dayjs.locale(localeTR);
-
 dayjs.extend(relativeTime);
 
+dayjs.extend(utc);
+
 // @ts-expect-error Generated<string> is string
-const dateFromNow = dayjs(data?.created_at).fromNow();
+const dateFromNow = dayjs(data?.created_at).add(3, 'hour').from(dayjs.utc());
 ---
 
 <Layout>

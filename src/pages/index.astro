@@ -44,7 +44,12 @@ import { Label } from '@/components/ui/label';
           getirilecek.
         </p>
         <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
-          <Input type="file" name="selected-photo" id="photo-selector" />
+          <Input
+            type="file"
+            name="selected-photo"
+            id="photo-selector"
+            required
+          />
           <p class="text-sm text-muted-foreground">
             Galerinizden bir fotoğraf seçin.
           </p>
@@ -62,14 +67,23 @@ import { Label } from '@/components/ui/label';
           gittiği zaman seçtiğiniz fotoğrafı görebilecek.
         </p>
         <div>
-          <div id="map" class="w-full h-[450px] rounded mt-4"></div>
+          <div
+            id="map"
+            class="w-full h-[450px] rounded mt-4 transition-colors ease-in-out border-2 duration-300"
+          >
+          </div>
           <p class="text-xl mt-2">
             <span class="font-semibold">Seçilen Konum:</span>
           </p>
-          <p class="text-lg" id="coordinates">
+
+          <p
+            class="text-lg transition ease-in-out duration-700"
+            id="coordinates"
+          >
             Henüz konum seçmediniz, konum seçmek için haritadaki bir noktaya
             basınız.
           </p>
+
           <p
             class="text-lg text-muted-foreground mt-2"
             id="location-selected-confirmation"
@@ -92,6 +106,7 @@ import { Label } from '@/components/ui/label';
               id="location-author"
               name="author"
               placeholder="İsminizi buraya yazınız."
+              required
             />
           </div>
           <div class="grid w-full max-w-sm items-center gap-1.5">
@@ -100,6 +115,7 @@ import { Label } from '@/components/ui/label';
               placeholder="Açıklamanızı buraya yazınız."
               name="description"
               id="location-description"
+              required
             />
             <p class="text-sm text-muted-foreground">
               Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
@@ -131,6 +147,26 @@ import { Label } from '@/components/ui/label';
 <script>
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
+
+    const locationSelected = document.getElementById(
+      'location-selected-confirmation'
+    )?.innerText;
+
+    if (!locationSelected) {
+      const coordinatesText = document.getElementById('coordinates');
+
+      const mapDiv = document.getElementById('map');
+
+      mapDiv?.classList.add('border-slate-700');
+      coordinatesText?.classList.add('drop-shadow-xl');
+
+      setTimeout(() => {
+        mapDiv?.classList.remove('border-slate-700');
+        coordinatesText?.classList.remove('drop-shadow-xl');
+      }, 500);
+
+      return;
+    }
 
     const submitButton = document.getElementById(
       'submit-button'
