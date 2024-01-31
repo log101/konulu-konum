@@ -67,7 +67,12 @@ const dateFromNow = dayjs(data?.created_at).add(3, 'hour').from(dayjs.utc());
       </CardFooter>
     </Card>
 
-    <LockedContent contentId={data?.id} imageUrl={data?.blob_url} client:load />
+    <LockedContent
+      contentId={data?.id}
+      imageUrl={data?.blob_url}
+      location={data?.loc}
+      client:load
+    />
 
     <div
       id="map"

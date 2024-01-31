@@ -13,15 +13,26 @@ const incrementCounter = async (id: string | Generated<string>) =>
 
 const LocationButton = ({
   contentId = "",
-  imageUrl = "#"
+  imageUrl = "#",
+  location = ""
 }: {
   contentId?: string | Generated<string>
   imageUrl?: string
+  location?: string
 }) => {
   const [atTarget, setAtTarget] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
   const [hasPermission, setHasPermission] = useState(false)
   const [watchId, setWatchId] = useState<number>()
+  const [distanceRemain, setDistanceRemain] = useState<string>("")
+
+  const targetCoordinates = JSON.parse(location).coordinates
+  const targetPos = {
+    lat: targetCoordinates[0],
+    lng: targetCoordinates[1]
+  }
+
+  console.log(targetPos)
 
   const startWatchingLocation = () => {
     setHasPermission(true)
@@ -33,9 +44,13 @@ const LocationButton = ({
             lng: position.coords.longitude
           }
 
-          const totalDistanceInKM = distance(pos.lat, pos.lng, pos.lat, pos.lng).toFixed(0)
+          const totalDistanceInKM = distance(pos.lat, pos.lng, targetPos.lat, targetPos.lng)
 
-          if (totalDistanceInKM === "0") {
+          if (totalDistanceInKM > 1) {
+            setDistanceRemain(`${totalDistanceInKM.toFixed(0)} KM`)
+          } else if (totalDistanceInKM < 1 && totalDistanceInKM * 1000 > 50) {
+            setDistanceRemain(`${(totalDistanceInKM * 1000).toFixed(0)} Metre`)
+          } else {
             setAtTarget(true)
           }
         },
@@ -94,7 +109,10 @@ const LocationButton = ({
               </Button>
               <Card className='p-2'>
                 {hasPermission ? (
-                  <CardContent className='pb-0 text-center'>İçeriği görmek için konuma gitmelisin!</CardContent>
+                  <CardContent className='pb-0 text-center'>
+                    <p>İçeriği görmek için konuma gitmelisin!</p>
+                    <p>Kalan mesafe {distanceRemain}</p>
+                  </CardContent>
                 ) : (
                   <div className='flex flex-col gap-2'>
                     <CardContent className='pb-0 text-center'>
