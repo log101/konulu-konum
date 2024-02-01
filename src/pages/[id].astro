@@ -33,6 +33,15 @@ dayjs.extend(relativeTime);
 
 dayjs.extend(utc);
 
+console.log(
+  'then',
+  data?.created_at,
+  'now',
+  dayjs().format(),
+  'now utc',
+  dayjs.utc().format()
+);
+
 // @ts-expect-error Generated<string> is string
 const dateFromNow = dayjs(data?.created_at).add(3, 'hour').from(dayjs.utc());
 ---

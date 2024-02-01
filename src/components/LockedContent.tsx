@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import distance from "@/utils/distance"
 
 import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons"
 import { useEffect, useState } from "react"
@@ -32,8 +31,6 @@ const LocationButton = ({
     lng: targetCoordinates[1]
   }
 
-  console.log(targetPos)
-
   const startWatchingLocation = () => {
     setHasPermission(true)
     if (!watchId) {
@@ -44,18 +41,24 @@ const LocationButton = ({
             lng: position.coords.longitude
           }
 
-          const totalDistanceInKM = distance(pos.lat, pos.lng, targetPos.lat, targetPos.lng)
+          // @ts-expect-error 3rd party script
+          const targetLatLng = L.latLng(targetPos)
 
-          if (totalDistanceInKM > 1) {
-            setDistanceRemain(`${totalDistanceInKM.toFixed(0)} KM`)
-          } else if (totalDistanceInKM < 1 && totalDistanceInKM * 1000 > 50) {
-            setDistanceRemain(`${(totalDistanceInKM * 1000).toFixed(0)} Metre`)
+          // @ts-expect-error 3rd party script
+          const currentLatLng = L.latLng(pos)
+
+          const betweenMeters = currentLatLng.distanceTo(targetLatLng)
+
+          if (betweenMeters > 1000) {
+            setDistanceRemain(`${(betweenMeters / 1000).toFixed()} KM`)
+          } else if (betweenMeters > 50) {
+            setDistanceRemain(`${betweenMeters.toFixed(0)} M`)
           } else {
             setAtTarget(true)
           }
         },
         () => null,
-        { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 }
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       )
 
       setWatchId(id)
@@ -90,7 +93,11 @@ const LocationButton = ({
             <img src={imageUrl} className='blur-lg h-[450px]' />
 
             <div className='flex flex-col justify-center gap-4 overlay'>
-              <Button size='lg' className='text-md' onClick={handleUnlock}>
+              <Button
+                size='lg'
+                className='text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800'
+                onClick={handleUnlock}
+              >
                 <LockOpen1Icon className='mr-2 h-4 w-4' />
                 İçeriğin Kilidi Açıldı
               </Button>
@@ -111,7 +118,7 @@ const LocationButton = ({
                 {hasPermission ? (
                   <CardContent className='pb-0 text-center'>
                     <p>İçeriği görmek için konuma gitmelisin!</p>
-                    <p>Kalan mesafe {distanceRemain}</p>
+                    <p>{distanceRemain && `Kalan mesafe: ${distanceRemain}`}</p>
                   </CardContent>
                 ) : (
                   <div className='flex flex-col gap-2'>
