@@ -39,7 +39,7 @@ function startWatchingLocation() {
             }
         },
         () => null,
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
     )
 }
 

@@ -6,6 +6,7 @@ let watchId = -1;
 function startWatchingLocation() {
     watchId = navigator.geolocation.watchPosition(
         (position) => {
+            console.log('watching')
             const pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -19,8 +20,10 @@ function startWatchingLocation() {
             }
         },
         () => null,
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
     )
+
+    console.log('trying', watchId)
 }
 
 var map = L.map('map').setView(TARGET_LOCATION, 13);
@@ -73,6 +76,7 @@ L.Control.GoToCurrentLocation = L.Control.extend({
                 startWatchingLocation()
                 locationButton.textContent = 'Konumuma Git';
             } else {
+                console.log(currentLocationMarker)
                 map.setView(currentLocationMarker.getLatLng(), 12);
             }
         });
