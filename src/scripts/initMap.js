@@ -1,30 +1,7 @@
+/* eslint-disable no-undef */
 const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
 
 const TARGET_LOCATION = data.coordinates
-
-let watchId = -1;
-function startWatchingLocation() {
-    watchId = navigator.geolocation.watchPosition(
-        (position) => {
-            console.log('watching')
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            }
-
-            if (currentLocationMarker) {
-                currentLocationMarker.setLatLng(pos);
-            } else {
-                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                currentLocationMarker.addTo(map);
-            }
-        },
-        () => null,
-        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
-    )
-
-    console.log('trying', watchId)
-}
 
 var map = L.map('map').setView(TARGET_LOCATION, 13);
 
@@ -41,53 +18,12 @@ var targetLocationIcon = L.icon({
 
 L.marker(TARGET_LOCATION, { icon: targetLocationIcon }).addTo(map);
 
-var circle = L.circle(TARGET_LOCATION, {
+L.circle(TARGET_LOCATION, {
     color: 'blue',
     fillColor: '#30f',
     fillOpacity: 0.2,
     radius: 50
 }).addTo(map);
-
-var currentLocationIcon = L.icon({
-    iconUrl: 'blue-dot.png',
-    iconSize: [32, 32],
-});
-
-let currentLocationMarker;
-
-function onLocationError(e) {
-    alert(e.message);
-}
-
-map.on('locationerror', onLocationError);
-
-L.Control.GoToCurrentLocation = L.Control.extend({
-    onAdd: function (map) {
-        const locationButton = document.createElement('button');
-
-        locationButton.textContent = 'Konum İzni Ver';
-
-        locationButton.classList.add('custom-map-control-button');
-
-        locationButton.name = 'select-location-button'
-
-        locationButton.addEventListener('click', () => {
-            if (watchId === -1) {
-                startWatchingLocation()
-                locationButton.textContent = 'Konumuma Git';
-            } else {
-                console.log(currentLocationMarker)
-                map.setView(currentLocationMarker.getLatLng(), 12);
-            }
-        });
-
-        return locationButton;
-    },
-
-    onRemove: function (map) {
-        // Nothing to do here
-    },
-});
 
 L.Control.GoToTargetLocation = L.Control.extend({
     onAdd: function (map) {
@@ -102,22 +38,19 @@ L.Control.GoToTargetLocation = L.Control.extend({
         });
 
         return locationButton;
-    },
-
-    onRemove: function (map) {
-        // Nothing to do here
-    },
+    }
 });
-
-L.control.currentLocation = function (opts) {
-    return new L.Control.GoToCurrentLocation(opts);
-};
 
 L.control.targetLocation = function (opts) {
     return new L.Control.GoToTargetLocation(opts);
 };
 
-L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
-
 L.control.targetLocation({ position: 'bottomleft' }).addTo(map);
 
+L.control.locate({
+    position: 'bottomleft', clickBehavior: {
+        inView: 'setView',
+        outOfView: 'setView',
+        inViewNotFollowing: 'setView'
+    }
+}).addTo(map);
