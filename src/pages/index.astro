@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 ---
 
 <Layout>
@@ -132,92 +133,101 @@ import { Label } from '@/components/ui/label';
             </p>
           </div>
         </div>
+        <div class="flex gap-2 my-6 items-center">
+          <Checkbox id="kvkk" className="w-6 h-6" /><Label
+            htmlFor="kvkk"
+            className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Konulu Konum'u KVKK kapsamında dava etmeyeceğimi onaylıyorum.
+          </Label>
+        </div>
+
+        <Button
+          className="w-full text-lg"
+          type="submit"
+          id="submit-button"
+          size="lg"
+        >
+          <ReloadIcon
+            className="mr-2 h-4 w-4 animate-spin hidden"
+            id="submit-button-reload"
+          />
+          Bağlantıyı Oluştur
+        </Button>
       </div>
-
-      <Button
-        className="w-full text-lg"
-        type="submit"
-        id="submit-button"
-        size="lg"
-      >
-        <ReloadIcon
-          className="mr-2 h-4 w-4 animate-spin hidden"
-          id="submit-button-reload"
-        />
-        Bağlantıyı Oluştur
-      </Button>
     </form>
+    <script src="../scripts/initSelectionMap.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   </main>
-  <script src="../scripts/initSelectionMap.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"
-  ></script>
+
+  <script>
+    const handleSubmit = async (e: SubmitEvent) => {
+      e.preventDefault();
+
+      const locationSelected = document.getElementById(
+        'location-selected-confirmation'
+      )?.innerText;
+
+      if (!locationSelected) {
+        const coordinatesText = document.getElementById('coordinates');
+
+        const mapDiv = document.getElementById('map');
+
+        mapDiv?.classList.add('border-slate-700');
+        coordinatesText?.classList.add('drop-shadow-xl');
+
+        setTimeout(() => {
+          mapDiv?.classList.remove('border-slate-700');
+          coordinatesText?.classList.remove('drop-shadow-xl');
+        }, 500);
+
+        return;
+      }
+
+      const submitButton = document.getElementById(
+        'submit-button'
+      ) as HTMLButtonElement;
+      const reloadIcon = document.getElementById(
+        'submit-button-reload'
+      ) as HTMLElement;
+
+      submitButton.disabled = true;
+      reloadIcon.classList.toggle('hidden');
+
+      const formData = new FormData(e.target as HTMLFormElement);
+
+      const res = await fetch(`/api/content`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      reloadIcon.classList.toggle('hidden');
+      submitButton.disabled = false;
+
+      if (res.status === 200) {
+        const data = await res.json();
+
+        if (data.url) location.assign('/' + data.url);
+      } else {
+        // @ts-ignore
+        Toastify({
+          text: 'Konulu konum oluşturulamadı, lütfen tekrar deneyin.',
+          duration: 3000,
+          gravity: 'top', // `top` or `bottom`
+          position: 'center', // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: 'black',
+            borderRadius: '6px',
+            margin: '16px',
+          },
+          onClick: function () {}, // Callback after click
+        }).showToast();
+      }
+    };
+
+    document.getElementById('sample-form')!.onsubmit = handleSubmit;
+  </script>
 </Layout>
-
-<script>
-  const handleSubmit = async (e: SubmitEvent) => {
-    e.preventDefault();
-
-    const locationSelected = document.getElementById(
-      'location-selected-confirmation'
-    )?.innerText;
-
-    if (!locationSelected) {
-      const coordinatesText = document.getElementById('coordinates');
-
-      const mapDiv = document.getElementById('map');
-
-      mapDiv?.classList.add('border-slate-700');
-      coordinatesText?.classList.add('drop-shadow-xl');
-
-      setTimeout(() => {
-        mapDiv?.classList.remove('border-slate-700');
-        coordinatesText?.classList.remove('drop-shadow-xl');
-      }, 500);
-
-      return;
-    }
-
-    const submitButton = document.getElementById(
-      'submit-button'
-    ) as HTMLButtonElement;
-    const reloadIcon = document.getElementById(
-      'submit-button-reload'
-    ) as HTMLElement;
-
-    submitButton.disabled = true;
-    reloadIcon.classList.toggle('hidden');
-
-    const formData = new FormData(e.target as HTMLFormElement);
-
-    const res = await fetch(`/api/content`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    reloadIcon.classList.toggle('hidden');
-    submitButton.disabled = false;
-
-    if (res.status === 200) {
-      const data = await res.json();
-
-      if (data.url) location.assign('/' + data.url);
-    } else {
-      // @ts-ignore
-      Toastify({
-        text: 'Konulu konum oluşturulamadı, lütfen tekrar deneyin.',
-        duration: 3000,
-        gravity: 'top', // `top` or `bottom`
-        position: 'center', // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: 'black',
-          borderRadius: '6px',
-          margin: '16px',
-        },
-        onClick: function () {}, // Callback after click
-      }).showToast();
-    }
-  };
-
-  document.getElementById('sample-form')!.onsubmit = handleSubmit;
-</script>
