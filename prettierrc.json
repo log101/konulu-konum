@@ -5,7 +5,7 @@
   "bracketSpacing": true,
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": false,
-  "bracketSameLine": true,
+  "bracketSameLine": false,
   "jsxSingleQuote": true,
   "proseWrap": "preserve",
   "quoteProps": "as-needed",

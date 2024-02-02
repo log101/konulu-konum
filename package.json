@@ -37,7 +37,6 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@types/google.maps": "^3.54.10",
-    "eslint": "^8.56.0"
+    "@types/google.maps": "^3.54.10"
   }
 }

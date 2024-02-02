@@ -58,7 +58,7 @@ const LocationButton = ({
           }
         },
         () => null,
-        { enableHighAccuracy: true, maximumAge: 10000 }
+        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
       )
 
       setWatchId(id)
@@ -69,6 +69,15 @@ const LocationButton = ({
     setContentVisible(true)
     await incrementCounter(contentId)
   }
+
+  useEffect(() => {
+    navigator.permissions.query({ name: "geolocation" }).then(permissionStatus => {
+      if (permissionStatus.state === "granted") {
+        setHasPermission(true)
+        startWatchingLocation()
+      }
+    })
+  }, [])
 
   if (contentVisible) {
     return (
