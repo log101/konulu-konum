@@ -92,7 +92,7 @@ const LocationButton = ({
       <div className='w-full h-[475px] p-4'>
         {atTarget ? (
           <div className='flex flex-col justify-center items-center image-wrapper'>
-            <img src={imageUrl} className='blur-lg h-[450px]' />
+            <img src={imageUrl} className='blur-2xl h-[450px]' />
 
             <div className='flex flex-col justify-center gap-4 overlay'>
               <Button
@@ -110,7 +110,7 @@ const LocationButton = ({
           </div>
         ) : (
           <div className='flex flex-col justify-center items-center image-wrapper'>
-            <img src={imageUrl} className='blur-lg h-[450px]' />
+            <img src={imageUrl} className='blur-2xl h-[450px]' />
             <div className='flex flex-col justify-center gap-4 overlay'>
               <Button size='lg' className='text-md'>
                 <LockClosedIcon className='mr-2 h-4 w-4' /> İçerik Kilitli
