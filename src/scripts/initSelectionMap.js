@@ -1,3 +1,5 @@
+import { remoteLog } from "@/lib/utils";
+
 var map = L.map('map').setView([41.024857599001905, 28.940787550837882], 10);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -22,32 +24,47 @@ var currentLocationIcon = L.icon({
 
 let currentLocationMarker;
 
-let watchId = -1;
 function startWatchingLocation() {
-    watchId = navigator.geolocation.watchPosition(
-        (position) => {
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            }
-
-            if (currentLocationMarker) {
-                currentLocationMarker.setLatLng(pos);
-            } else {
-                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                currentLocationMarker.addTo(map);
-            }
-        },
-        () => null,
-        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
-    )
+    map.locate({ watch: true })
 }
 
-function onLocationError(e) {
-    alert(e.message);
+function onLocationError() {
+    // @ts-ignore
+    Toastify({
+        text: 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.',
+        duration: 3000,
+        gravity: 'top', // `top` or `bottom`
+        position: 'center', // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: 'black',
+            borderRadius: '6px',
+            margin: '16px',
+        },
+        onClick: function () { }, // Callback after click
+    }).showToast();
+}
+
+
+function onLocationSuccess(locationEvent) {
+    const position = locationEvent.latlng
+
+    const currentPos = {
+        lat: position.lat,
+        lng: position.lng
+    }
+
+    if (currentLocationMarker) {
+        currentLocationMarker.setLatLng(currentPos);
+    } else {
+        currentLocationMarker = L.marker(currentPos, { icon: currentLocationIcon });
+        currentLocationMarker.addTo(map);
+    }
 }
 
 map.on('locationerror', onLocationError);
+
+map.on('locationfound', onLocationSuccess)
 
 L.Control.GoToCurrentLocation = L.Control.extend({
     onAdd: function (map) {
@@ -60,11 +77,29 @@ L.Control.GoToCurrentLocation = L.Control.extend({
         locationButton.type = 'button'
 
         locationButton.addEventListener('click', (ev) => {
-            if (watchId === -1) {
+            if (locationButton.textContent != 'Konumuma Git') {
                 startWatchingLocation()
                 locationButton.textContent = 'Konumuma Git';
             } else {
-                map.setView(currentLocationMarker.getLatLng(), 12);
+                if (currentLocationMarker) {
+                    map.setView(currentLocationMarker.getLatLng(), 12);
+                } else {
+                    // @ts-ignore
+                    Toastify({
+                        text: 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.',
+                        duration: 3000,
+                        gravity: 'top', // `top` or `bottom`
+                        position: 'center', // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: 'black',
+                            borderRadius: '6px',
+                            margin: '16px',
+                        },
+                        onClick: function () { }, // Callback after click
+                    }).showToast();
+                }
+
             }
             L.DomEvent.stopPropagation(ev)
         })
@@ -78,30 +113,6 @@ L.control.currentLocation = function (opts) {
 };
 
 L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
-
-navigator.permissions
-    .query({ name: "geolocation" })
-    .then((permissionStatus) => {
-        if (permissionStatus.state === 'granted') {
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    }
-
-                    if (currentLocationMarker) {
-                        currentLocationMarker.setLatLng(pos);
-                    } else {
-                        currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                        currentLocationMarker.addTo(map);
-                    }
-                },
-                () => null,
-                { enableHighAccuracy: true, maximumAge: 10000, timeout: 57000 }
-            )
-        }
-    });
 
 
 map.on('click', (e) => {
