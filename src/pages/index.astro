@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 ---
 
 <Layout>
@@ -134,7 +133,8 @@ import { Checkbox } from '@/components/ui/checkbox';
           </div>
         </div>
         <div class="flex gap-2 my-6 items-center">
-          <Checkbox id="kvkk" className="w-6 h-6" /><Label
+          <input type="checkbox" id="kvkk" class="w-6 h-6" required />
+          <Label
             htmlFor="kvkk"
             className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
