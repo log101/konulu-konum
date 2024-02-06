@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 
 import "../styles/locked-content.css"
 import type { Generated } from "kysely"
+import { onLocationError } from "@/lib/error"
 
 const incrementCounter = async (id: string | Generated<string>) =>
   await fetch(`${import.meta.env.PUBLIC_HOME_URL}/api/content/increment?id=${id}`)
@@ -26,6 +27,7 @@ const LocationButton = ({
   const [distanceRemain, setDistanceRemain] = useState<string>("")
 
   const targetCoordinates = JSON.parse(location).coordinates
+
   const targetPos = {
     lat: targetCoordinates[0],
     lng: targetCoordinates[1]
@@ -57,7 +59,7 @@ const LocationButton = ({
             setAtTarget(true)
           }
         },
-        () => null,
+        err => onLocationError(err),
         { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
       )
 
@@ -96,8 +98,7 @@ const LocationButton = ({
               <Button
                 size='lg'
                 className='text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800'
-                onClick={handleUnlock}
-              >
+                onClick={handleUnlock}>
                 <LockOpen1Icon className='mr-2 h-4 w-4' />
                 İçeriğin Kilidi Açıldı
               </Button>
@@ -129,8 +130,7 @@ const LocationButton = ({
                     <Button
                       size='sm'
                       className='bg-green-700 hover:bg-green-600 text-md'
-                      onClick={() => startWatchingLocation()}
-                    >
+                      onClick={() => startWatchingLocation()}>
                       Konum İzni Ver
                     </Button>
                   </div>

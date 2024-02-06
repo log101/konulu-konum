@@ -1,29 +1,11 @@
+import { remoteLog } from "@/lib/utils";
+
 const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
 
 const TARGET_LOCATION = data.coordinates
 
-let watchId = -1;
 function startWatchingLocation() {
-    watchId = navigator.geolocation.watchPosition(
-        (position) => {
-            console.log('watching')
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            }
-
-            if (currentLocationMarker) {
-                currentLocationMarker.setLatLng(pos);
-            } else {
-                currentLocationMarker = L.marker(pos, { icon: currentLocationIcon });
-                currentLocationMarker.addTo(map);
-            }
-        },
-        () => null,
-        { enableHighAccuracy: true, timeout: 27000, maximumAge: 10000 }
-    )
-
-    console.log('trying', watchId)
+    map.locate({ watch: true })
 }
 
 var map = L.map('map').setView(TARGET_LOCATION, 13);
@@ -55,11 +37,59 @@ var currentLocationIcon = L.icon({
 
 let currentLocationMarker;
 
-function onLocationError(e) {
-    alert(e.message);
+function onLocationError(err) {
+    let errorMessage;
+    switch (err.code) {
+        case 1:
+            errorMessage = 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.'
+            break;
+        case 2:
+            errorMessage = 'Konumunuz tespit edilemedi, lütfen biraz sonra tekrar deneyiniz.'
+            break;
+        case 3:
+            errorMessage = 'Konum isteği zaman aşımına uğradı, lütfen sayfayı yenileyip tekrar deneyiniz.'
+            break;
+        default:
+            errorMessage = 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.'
+            break;
+    }
+    // @ts-ignore
+    Toastify({
+        text: errorMessage,
+        duration: 3000,
+        gravity: 'top', // `top` or `bottom`
+        position: 'center', // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: 'black',
+            borderRadius: '6px',
+            margin: '16px',
+        },
+        onClick: function () { }, // Callback after click
+    }).showToast();
+}
+
+
+function onLocationSuccess(locationEvent) {
+    const position = locationEvent.latlng
+
+    const currentPos = {
+        lat: position.lat,
+        lng: position.lng
+    }
+
+    if (currentLocationMarker) {
+        currentLocationMarker.setLatLng(currentPos);
+    } else {
+        currentLocationMarker = L.marker(currentPos, { icon: currentLocationIcon });
+        currentLocationMarker.addTo(map);
+    }
 }
 
 map.on('locationerror', onLocationError);
+
+map.on('locationfound', onLocationSuccess)
+
 
 L.Control.GoToCurrentLocation = L.Control.extend({
     onAdd: function (map) {
@@ -69,23 +99,37 @@ L.Control.GoToCurrentLocation = L.Control.extend({
 
         locationButton.classList.add('custom-map-control-button');
 
-        locationButton.name = 'select-location-button'
+        locationButton.type = 'button'
 
-        locationButton.addEventListener('click', () => {
-            if (watchId === -1) {
+        locationButton.addEventListener('click', (ev) => {
+            if (locationButton.textContent != 'Konumuma Git') {
                 startWatchingLocation()
                 locationButton.textContent = 'Konumuma Git';
             } else {
-                console.log(currentLocationMarker)
-                map.setView(currentLocationMarker.getLatLng(), 12);
+                if (currentLocationMarker) {
+                    map.setView(currentLocationMarker.getLatLng(), 12);
+                } else {
+                    // @ts-ignore
+                    Toastify({
+                        text: 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.',
+                        duration: 3000,
+                        gravity: 'top', // `top` or `bottom`
+                        position: 'center', // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: 'black',
+                            borderRadius: '6px',
+                            margin: '16px',
+                        },
+                        onClick: function () { }, // Callback after click
+                    }).showToast();
+                }
+
             }
-        });
+            L.DomEvent.stopPropagation(ev)
+        })
 
         return locationButton;
-    },
-
-    onRemove: function (map) {
-        // Nothing to do here
     },
 });
 
@@ -102,11 +146,7 @@ L.Control.GoToTargetLocation = L.Control.extend({
         });
 
         return locationButton;
-    },
-
-    onRemove: function (map) {
-        // Nothing to do here
-    },
+    }
 });
 
 L.control.currentLocation = function (opts) {

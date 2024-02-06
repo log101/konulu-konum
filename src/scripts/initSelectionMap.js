@@ -1,3 +1,4 @@
+import { onLocationError } from "@/lib/error";
 import { remoteLog } from "@/lib/utils";
 
 var map = L.map('map').setView([41.024857599001905, 28.940787550837882], 10);
@@ -27,24 +28,6 @@ let currentLocationMarker;
 function startWatchingLocation() {
     map.locate({ watch: true })
 }
-
-function onLocationError() {
-    // @ts-ignore
-    Toastify({
-        text: 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.',
-        duration: 3000,
-        gravity: 'top', // `top` or `bottom`
-        position: 'center', // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-            background: 'black',
-            borderRadius: '6px',
-            margin: '16px',
-        },
-        onClick: function () { }, // Callback after click
-    }).showToast();
-}
-
 
 function onLocationSuccess(locationEvent) {
     const position = locationEvent.latlng
