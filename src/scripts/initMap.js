@@ -1,5 +1,3 @@
-import { remoteLog } from "@/lib/utils";
-
 const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
 
 const TARGET_LOCATION = data.coordinates

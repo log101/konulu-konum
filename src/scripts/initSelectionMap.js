@@ -1,5 +1,4 @@
 import { onLocationError } from "@/lib/error";
-import { remoteLog } from "@/lib/utils";
 
 var map = L.map('map').setView([41.024857599001905, 28.940787550837882], 10);
 
