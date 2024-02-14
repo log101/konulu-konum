@@ -39,7 +39,7 @@ const ShareButton = () => {
         //@ts-expect-error navigator is not always defined
         window.navigator.share ? (
           <Button className='w-full text-lg' size='lg' onClick={shareLink}>
-            Paylaş Mobil
+            Paylaş
           </Button>
         ) : (
           <Button className='w-full text-lg' size='lg' onClick={copyLink}>
