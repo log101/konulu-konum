@@ -89,7 +89,7 @@ const LocationButton = ({
     )
   } else {
     return (
-      <div className='w-full h-[475px] p-4'>
+      <div className='w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded'>
         {atTarget ? (
           <div className='flex flex-col justify-center items-center image-wrapper'>
             <img src={imageUrl} className='blur-2xl h-[450px]' />

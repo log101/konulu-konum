@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import '../styles/locked-page.css';
 
 import Layout from '../layouts/Layout.astro';
-import { Button } from '@/components/ui/button';
+import ShareButton from '../components/ShareButton';
 import {
   Card,
   CardContent,
@@ -81,7 +81,7 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     >
     </div>
 
-    <Button className="w-full text-lg" size="lg">Paylaş</Button>
+    <ShareButton client:only />
     <div class="flex justify-center">
       <p class="text-muted-foreground">
         Fotoğrafın kilidi şu ana dek <b>{data?.unlocked_counter}</b> kez açıldı
