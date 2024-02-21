@@ -43,5 +43,8 @@
   "devDependencies": {
     "@types/bun": "^1.0.5",
     "@types/google.maps": "^3.54.10"
-  }
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
