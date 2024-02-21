@@ -1,4 +1,6 @@
-import { put } from "@vercel/blob"
+import { createClient } from "@supabase/supabase-js"
+import sharp from "sharp"
+
 import type { APIRoute } from "astro"
 import { createKysely } from "@vercel/postgres-kysely"
 import { customAlphabet } from "nanoid"
@@ -6,12 +8,12 @@ import { customAlphabet } from "nanoid"
 import type { Database } from "@/lib/db"
 
 export const POST: APIRoute = async ({ request }) => {
-  const data = await request.formData()
+  const formData = await request.formData()
 
-  const image = data.get("selected-photo") as File
-  const author = data.get("author")
-  const description = data.get("description")
-  const geolocation = data.get("geolocation")
+  const image = formData.get("selected-photo") as File
+  const author = formData.get("author")
+  const description = formData.get("description")
+  const geolocation = formData.get("geolocation")
 
   if (!image || !geolocation) {
     return new Response(null, {
@@ -29,11 +31,35 @@ export const POST: APIRoute = async ({ request }) => {
     })
   }
 
-  const blob = await put(image.name, image, { access: "public", token: import.meta.env.BLOB_READ_WRITE_TOKEN })
-
-  const db = createKysely<Database>({ connectionString: import.meta.env.POSTGRES_URL })
+  const supabaseUrl = import.meta.env.SUPABASE_URL
+  const supabaseKey = import.meta.env.SUPABASE_KEY
+  const supabase = createClient(supabaseUrl, supabaseKey)
 
   const nanoid = customAlphabet("abcdefghijklmnoprstuvyz", 10)
+
+  const randomImageId = nanoid()
+
+  const imageName = `${image.name.replace(/\.[^/.]+$/, "")}${randomImageId}.jpg`
+  const imagebuf = await image.arrayBuffer()
+
+  const compressed = await sharp(imagebuf).toFormat("jpg", { quality: 75 }).toBuffer()
+
+  const { data, error } = await supabase.storage.from("images").upload(`public/${imageName}`, compressed, {
+    cacheControl: "3600",
+    upsert: false
+  })
+
+  if (error) {
+    console.error(error.message, imageName, error.cause)
+    return new Response(null, {
+      status: 400,
+      statusText: error.message
+    })
+  }
+
+  const imagePublicUrl = `https://sozfqjbdyppxfwhqktja.supabase.co/storage/v1/object/public/images/public/${imageName}`
+
+  const db = createKysely<Database>({ connectionString: import.meta.env.POSTGRES_URL })
 
   const newUrl = nanoid()
 
@@ -41,7 +67,7 @@ export const POST: APIRoute = async ({ request }) => {
     .insertInto("contents")
     .values({
       url: `${newUrl.slice(0, 3)}-${newUrl.slice(3, 7)}-${newUrl.slice(7)}`,
-      blob_url: blob.url,
+      blob_url: imagePublicUrl,
       author: author?.toString() ?? "",
       description: description?.toString() ?? "",
       loc: `SRID=4326;POINT(${pos[0]} ${pos[1]})`
