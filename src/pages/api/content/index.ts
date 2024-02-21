@@ -1,6 +1,4 @@
 import { createClient } from "@supabase/supabase-js"
-import sharp from "sharp"
-
 import type { APIRoute } from "astro"
 import { createKysely } from "@vercel/postgres-kysely"
 import { customAlphabet } from "nanoid"
@@ -40,11 +38,8 @@ export const POST: APIRoute = async ({ request }) => {
   const randomImageId = nanoid()
 
   const imageName = `${image.name.replace(/\.[^/.]+$/, "")}${randomImageId}.jpg`
-  const imagebuf = await image.arrayBuffer()
 
-  const compressed = await sharp(imagebuf).toFormat("jpg", { quality: 75 }).toBuffer()
-
-  const { data, error } = await supabase.storage.from("images").upload(`public/${imageName}`, compressed, {
+  const { error } = await supabase.storage.from("images").upload(`public/${imageName}`, image, {
     cacheControl: "3600",
     upsert: false
   })

@@ -9,13 +9,6 @@ export default defineConfig({
   integrations: [react(), tailwind({
     applyBaseStyles: false
   })],
-  build: {
-    rollupOptions: {
-      external: [
-        "sharp"
-      ]
-    }
-  },
   output: "server",
   adapter: vercel()
 });
