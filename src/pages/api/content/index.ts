@@ -42,11 +42,13 @@ export const POST: APIRoute = async ({ request }) => {
 
   const imageBuf = await image.arrayBuffer()
 
-  const { data } = await sharpService.transform(
+  const { data, format } = await sharpService.transform(
     new Uint8Array(imageBuf),
-    { src: imageName },
+    { src: imageName, format: "webp" },
     { domains: [], remotePatterns: [], service: { entrypoint: "", config: { limitInputPixels: false } } }
   )
+
+  console.log(format)
 
   const { error } = await supabase.storage.from("images").upload(`public/${imageName}`, data, {
     cacheControl: "3600",
