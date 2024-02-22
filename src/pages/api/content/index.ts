@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js"
 import type { APIRoute } from "astro"
 import { createKysely } from "@vercel/postgres-kysely"
 import { customAlphabet } from "nanoid"
+import sharpService from "astro/assets/services/sharp"
 
 import type { Database } from "@/lib/db"
 
@@ -39,7 +40,15 @@ export const POST: APIRoute = async ({ request }) => {
 
   const imageName = `${image.name.replace(/\.[^/.]+$/, "")}${randomImageId}.jpg`
 
-  const { error } = await supabase.storage.from("images").upload(`public/${imageName}`, image, {
+  const imageBuf = await image.arrayBuffer()
+
+  const { data } = await sharpService.transform(
+    new Uint8Array(imageBuf),
+    { src: imageName },
+    { domains: [], remotePatterns: [], service: { entrypoint: "", config: { limitInputPixels: false } } }
+  )
+
+  const { error } = await supabase.storage.from("images").upload(`public/${imageName}`, data, {
     cacheControl: "3600",
     upsert: false
   })
