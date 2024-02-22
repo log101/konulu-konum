@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const randomImageId = nanoid()
 
-  const imageName = `${image.name.replace(/\.[^/.]+$/, "")}${randomImageId}.jpg`
+  const imageName = `${image.name.replace(/\.[^/.]+$/, "")}${randomImageId}.webp`
 
   const imageBuf = await image.arrayBuffer()
 
@@ -50,7 +50,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { error } = await supabase.storage.from("images").upload(`public/${imageName}`, data, {
     cacheControl: "3600",
-    upsert: false
+    upsert: false,
+    contentType: "image/webp"
   })
 
   if (error) {
