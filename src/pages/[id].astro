@@ -45,10 +45,9 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       >
         <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
       </h1>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
-        Arkadaşınız size bir fotoğraf ve bir not bıraktı. Fakat fotoğrafı
-        görebilmeniz için aşağıdaki konuma gitmeniz gerekiyor. Konuma
-        yaklaştığınızda butona basıp fotoğrafı görüntüleyebilirsiniz.
+      <p class="leading-7 [&:not(:first-child)]:mt-6 text-xl">
+        You have a message and photo from you friend. To see it, you'll have to
+        go to location below. Once you're close, you'll be able to see it.
       </p>
     </div>
 
@@ -84,7 +83,7 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     <ShareButton client:only />
     <div class="flex justify-center">
       <p class="text-muted-foreground">
-        Fotoğrafın kilidi şu ana dek <b>{data?.unlocked_counter}</b> kez açıldı
+        Photo is unlocked <b>{data?.unlocked_counter}</b> times
       </p>
     </div>
   </main>

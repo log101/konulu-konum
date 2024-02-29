@@ -4,7 +4,7 @@ const ShareButton = () => {
   const shareLink = async () => {
     const shareData = {
       title: "Konulu Konum",
-      text: "Sevdiklerinizi şaşırtın!",
+      text: "Surprise you're loved ones!",
       url: document.URL
     }
 
@@ -16,7 +16,7 @@ const ShareButton = () => {
       await navigator.clipboard.writeText(document.URL)
       // @ts-ignore
       Toastify({
-        text: "Konulu konum kopyalandı.",
+        text: "Konulu konum copied.",
         duration: 3000,
         gravity: "top", // `top` or `bottom`
         position: "center", // `left`, `center` or `right`
@@ -39,11 +39,11 @@ const ShareButton = () => {
         //@ts-expect-error navigator is not always defined
         window.navigator.share ? (
           <Button className='w-full text-lg' size='lg' onClick={shareLink}>
-            Paylaş
+            Share
           </Button>
         ) : (
           <Button className='w-full text-lg' size='lg' onClick={copyLink}>
-            Paylaş
+            Share
           </Button>
         )
       }

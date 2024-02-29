@@ -104,7 +104,7 @@ const LocationButton = ({
               </Button>
 
               <Card className='p-2'>
-                <CardContent className='pb-0 text-center'>İçeriği görmek için butona bas!</CardContent>
+                <CardContent className='pb-0 text-center'>Click to see the photo!</CardContent>
               </Card>
             </div>
           </div>
@@ -113,25 +113,25 @@ const LocationButton = ({
             <img src={imageUrl} className='blur-2xl h-[450px]' />
             <div className='flex flex-col justify-center gap-4 overlay'>
               <Button size='lg' className='text-md'>
-                <LockClosedIcon className='mr-2 h-4 w-4' /> İçerik Kilitli
+                <LockClosedIcon className='mr-2 h-4 w-4' /> Photo is locked
               </Button>
               <Card className='p-2'>
                 {hasPermission ? (
                   <CardContent className='pb-0 text-center'>
-                    <p>İçeriği görmek için konuma gitmelisin!</p>
+                    <p>You'll have to go the location to see it</p>
                     <p>{distanceRemain && `Kalan mesafe: ${distanceRemain}`}</p>
                   </CardContent>
                 ) : (
                   <div className='flex flex-col gap-2'>
                     <CardContent className='pb-0 text-center'>
-                      Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
+                      Click below to see how close you are
                     </CardContent>
 
                     <Button
                       size='sm'
                       className='bg-green-700 hover:bg-green-600 text-md'
                       onClick={() => startWatchingLocation()}>
-                      Konum İzni Ver
+                      Give geolocation permission
                     </Button>
                   </div>
                 )}

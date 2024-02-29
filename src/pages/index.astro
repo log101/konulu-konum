@@ -25,10 +25,8 @@ import { Label } from '@/components/ui/label';
         >
           <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
         </h1>
-        <p class="leading-7 [&:not(:first-child)]:mt-6">
-          3 basit adımda fotoğraflarınızı ve videolarınızı <b
-            >yalnızca belirli bir konumda</b
-          > açılacak şekilde kilitleyin:
+        <p class="leading-7 [&:not(:first-child)]:mt-6 text-xl">
+          Lock your files <b>based on a location</b> in three easy steps.
         </p>
       </div>
 
@@ -36,12 +34,10 @@ import { Label } from '@/components/ui/label';
         <h2
           class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
         >
-          1. Fotoğraf Seçimi
+          1. Choose a photo
         </h2>
         <p class="leading-7 [&:not(:first-child)]:mt-6">
-          Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
-          fotoğraf yalnızca belirli bir konumda açılabilecek bir hale
-          getirilecek.
+          Select a photo, it'll be locked based on a location you'll choose.
         </p>
         <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
           <Input
@@ -50,9 +46,7 @@ import { Label } from '@/components/ui/label';
             id="photo-selector"
             required
           />
-          <p class="text-sm text-muted-foreground">
-            Galerinizden bir fotoğraf seçin.
-          </p>
+          <p class="text-sm text-muted-foreground">Select a photo.</p>
         </div>
       </div>
 
@@ -60,11 +54,11 @@ import { Label } from '@/components/ui/label';
         <h2
           class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
         >
-          2. Fotoğrafın Açılacağı Konum
+          2. Choose a location
         </h2>
         <p class="leading-7 [&:not(:first-child)]:mt-6">
-          Haritadan bir nokta seçin. Bağlantıyı gönderdiğiniz kişi bu konuma
-          gittiği zaman seçtiğiniz fotoğrafı görebilecek.
+          Choose a location on the map. Once the <i>konulu konum</i> link is generated,
+          users will only be able to see this photo on this location.
         </p>
         <div>
           <div
@@ -73,15 +67,15 @@ import { Label } from '@/components/ui/label';
           >
           </div>
           <p class="text-xl mt-2">
-            <span class="font-semibold">Seçilen Konum:</span>
+            <span class="font-semibold">Selected Location:</span>
           </p>
 
           <p
             class="text-lg transition ease-in-out duration-700"
             id="coordinates"
           >
-            Henüz konum seçmediniz, konum seçmek için haritadaki bir noktaya
-            basınız.
+            You haven't chosen a location yet, please click on a point on the
+            map to choose a location.
           </p>
 
           <p
@@ -97,17 +91,17 @@ import { Label } from '@/components/ui/label';
         <h2
           class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
         >
-          3. Fotoğraf Açıklaması
+          3. Photo description
         </h2>
         <div class="grid w-full max-w-md items-center gap-2 mt-4">
           <div class="grid w-full items-center gap-1.5">
             <Label htmlFor="location-author" className="lg:text-lg text-md">
-              Gönderici
+              Sender
             </Label>
             <Input
               id="location-author"
               name="author"
-              placeholder="İsminizi buraya yazınız."
+              placeholder="Enter your name"
               className="lg:text-lg text-md"
               required
             />
@@ -117,18 +111,18 @@ import { Label } from '@/components/ui/label';
               htmlFor="location-description"
               className="lg:text-lg text-md"
             >
-              Açıklama
+              Description
             </Label>
             <Textarea
-              placeholder="Açıklamanızı buraya yazınız."
+              placeholder="Enter your description"
               name="description"
               id="location-description"
               className="lg:text-lg text-md"
               required
             />
             <p class="text-sm text-muted-foreground">
-              Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
-              görünecek.
+              Enter a description, it'll be shown on top of the photo you
+              selected.
             </p>
           </div>
         </div>
@@ -138,7 +132,7 @@ import { Label } from '@/components/ui/label';
             htmlFor="kvkk"
             className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Konulu Konum'u KVKK kapsamında dava etmeyeceğimi onaylıyorum.
+            I'm not uploading a personal data.
           </Label>
         </div>
 
@@ -152,7 +146,7 @@ import { Label } from '@/components/ui/label';
             className="mr-2 h-4 w-4 animate-spin hidden"
             id="submit-button-reload"
           />
-          Bağlantıyı Oluştur
+          Generate
         </Button>
       </div>
     </form>
