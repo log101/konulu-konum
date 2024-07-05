@@ -19,15 +19,17 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
 
-type Content = Omit<ContentTable, 'url'>;
+type Content = ContentTable;
 
 const { id } = Astro.params;
 
 const res = await fetch(
-  `${import.meta.env.PUBLIC_HOME_URL}/api/content?id=${id}`
+  `http://localhost:3000/api/location/${id}`
 );
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
+
+console.log(data)
 
 dayjs.extend(relativeTime);
 
@@ -68,8 +70,8 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     </Card>
 
     <LockedContent
-      contentId={data?.id}
-      imageUrl={data?.blob_url}
+      contentId={data?.url}
+      imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
       location={data?.loc}
       client:load
     />

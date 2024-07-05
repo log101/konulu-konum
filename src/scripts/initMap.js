@@ -1,6 +1,6 @@
 const data = JSON.parse(document.getElementById('map').dataset.targetLocation)
 
-const TARGET_LOCATION = data.coordinates
+const TARGET_LOCATION = data
 
 function startWatchingLocation() {
     map.locate({ watch: true })

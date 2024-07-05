@@ -195,7 +195,7 @@ import { Label } from '@/components/ui/label';
 
       const formData = new FormData(e.target as HTMLFormElement);
 
-      const res = await fetch(`/api/content`, {
+      const res = await fetch(`http://127.0.0.1:3000/api/location`, {
         method: 'POST',
         body: formData,
       });
