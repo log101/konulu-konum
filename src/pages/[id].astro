@@ -67,6 +67,12 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
         <p>{dateFromNow}</p>
       </CardFooter>
     </Card>
+
+    <WebComponentWrapper
+      contentId={data?.url}
+      imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
+      location={data?.loc}
+    />
     <LockedContent
       contentId={data?.url}
       imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
