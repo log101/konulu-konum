@@ -1,15 +1,10 @@
 ---
 export const prerender = true;
 
-import '@/styles/globals.css';
-import Layout from '../layouts/Layout.astro';
-import { Button } from '@/components/ui/button';
+import "@/styles/globals.css";
+import "../styles/locked-page.css";
 
-import '../styles/locked-page.css';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { Label } from '@/components/ui/label';
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
@@ -44,13 +39,14 @@ import { Label } from '@/components/ui/label';
           getirilecek.
         </p>
         <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
-          <Input
+          <input
             type="file"
             name="selected-photo"
             id="photo-selector"
+            class="p-2 border border-gray rounded-lg file:bg-inherit file:border-0"
             required
           />
-          <p class="text-sm text-muted-foreground">
+          <p class="px-2 text-sm text-muted-foreground">
             Galerinizden bir fotoğraf seçin.
           </p>
         </div>
@@ -101,31 +97,27 @@ import { Label } from '@/components/ui/label';
         </h2>
         <div class="grid w-full max-w-md items-center gap-2 mt-4">
           <div class="grid w-full items-center gap-1.5">
-            <Label htmlFor="location-author" className="lg:text-lg text-md">
+            <label for="location-author" class="lg:text-lg text-md">
               Gönderici
-            </Label>
-            <Input
+            </label>
+            <input
               id="location-author"
               name="author"
               placeholder="İsminizi buraya yazınız."
-              className="lg:text-lg text-md"
+              class="lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400"
               required
             />
           </div>
           <div class="grid w-full items-center gap-1.5">
-            <Label
-              htmlFor="location-description"
-              className="lg:text-lg text-md"
-            >
+            <label for="location-description" class="lg:text-lg text-md">
               Açıklama
-            </Label>
-            <Textarea
+            </label>
+            <textarea
               placeholder="Açıklamanızı buraya yazınız."
               name="description"
               id="location-description"
-              className="lg:text-lg text-md"
-              required
-            />
+              class="lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400 resize-none"
+              required></textarea>
             <p class="text-sm text-muted-foreground">
               Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
               görünecek.
@@ -134,26 +126,21 @@ import { Label } from '@/components/ui/label';
         </div>
         <div class="flex gap-2 my-6 items-center">
           <input type="checkbox" id="kvkk" class="w-6 h-6" required />
-          <Label
-            htmlFor="kvkk"
-            className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          <label
+            for="kvkk"
+            class="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Konulu Konum'u KVKK kapsamında dava etmeyeceğimi onaylıyorum.
-          </Label>
+          </label>
         </div>
 
-        <Button
-          className="w-full text-lg"
+        <button
+          class="w-full text-lg bg-slate-900 text-white p-2 rounded-lg"
           type="submit"
           id="submit-button"
-          size="lg"
         >
-          <ReloadIcon
-            className="mr-2 h-4 w-4 animate-spin hidden"
-            id="submit-button-reload"
-          />
           Bağlantıyı Oluştur
-        </Button>
+        </button>
       </div>
     </form>
     <script src="../scripts/initSelectionMap.js"></script>
@@ -164,67 +151,62 @@ import { Label } from '@/components/ui/label';
       e.preventDefault();
 
       const locationSelected = document.getElementById(
-        'location-selected-confirmation'
+        "location-selected-confirmation"
       )?.innerText;
 
       if (!locationSelected) {
-        const coordinatesText = document.getElementById('coordinates');
+        const coordinatesText = document.getElementById("coordinates");
 
-        const mapDiv = document.getElementById('map');
+        const mapDiv = document.getElementById("map");
 
-        mapDiv?.classList.add('border-slate-700');
-        coordinatesText?.classList.add('drop-shadow-xl');
+        mapDiv?.classList.add("border-slate-700");
+        coordinatesText?.classList.add("drop-shadow-xl");
 
         setTimeout(() => {
-          mapDiv?.classList.remove('border-slate-700');
-          coordinatesText?.classList.remove('drop-shadow-xl');
+          mapDiv?.classList.remove("border-slate-700");
+          coordinatesText?.classList.remove("drop-shadow-xl");
         }, 500);
 
         return;
       }
 
       const submitButton = document.getElementById(
-        'submit-button'
+        "submit-button"
       ) as HTMLButtonElement;
-      const reloadIcon = document.getElementById(
-        'submit-button-reload'
-      ) as HTMLElement;
 
       submitButton.disabled = true;
-      reloadIcon.classList.toggle('hidden');
 
       const formData = new FormData(e.target as HTMLFormElement);
 
       const res = await fetch(`http://127.0.0.1:3000/api/location`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
-      reloadIcon.classList.toggle('hidden');
       submitButton.disabled = false;
 
       if (res.status === 200) {
         const data = await res.json();
 
-        if (data.url) location.assign('/' + data.url);
+        if (data.url) location.assign("/" + data.url);
       } else {
         // @ts-ignore
         Toastify({
-          text: 'Konulu konum oluşturulamadı, lütfen tekrar deneyin.',
+          text: "Konulu konum oluşturulamadı, lütfen tekrar deneyin.",
           duration: 3000,
-          gravity: 'top', // `top` or `bottom`
-          position: 'center', // `left`, `center` or `right`
+          gravity: "top", // `top` or `bottom`
+          position: "center", // `left`, `center` or `right`
           stopOnFocus: true, // Prevents dismissing of toast on hover
           style: {
-            background: 'black',
-            borderRadius: '6px',
-            margin: '16px',
+            background: "black",
+            borderRadius: "6px",
+            margin: "16px",
           },
           onClick: function () {}, // Callback after click
         }).showToast();
       }
     };
 
-    document.getElementById('sample-form')!.onsubmit = handleSubmit;
+    document.getElementById("sample-form")!.onsubmit = handleSubmit;
   </script>
 </Layout>

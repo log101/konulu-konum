@@ -95,61 +95,65 @@ const LocationButton = ({
     );
   } else {
     return (
-      <div className="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded">
-        {atTarget ? (
-          <div className="flex flex-col justify-center items-center image-wrapper">
-            <img src={imageUrl} className="blur-2xl h-[450px]" />
+      <>
+        <div className="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded">
+          {atTarget ? (
+            <div className="flex flex-col justify-center items-center image-wrapper">
+              <img src={imageUrl} className="blur-2xl h-[450px]" />
 
-            <div className="flex flex-col justify-center gap-4 overlay">
-              <Button
-                size="lg"
-                className="text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
-                onClick={handleUnlock}
-              >
-                <LockOpen1Icon className="mr-2 h-4 w-4" />
-                İçeriğin Kilidi Açıldı
-              </Button>
+              <div className="flex flex-col justify-center gap-4 overlay">
+                <Button
+                  size="lg"
+                  className="text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
+                  onClick={handleUnlock}
+                >
+                  <LockOpen1Icon className="mr-2 h-4 w-4" />
+                  İçeriğin Kilidi Açıldı
+                </Button>
 
-              <Card className="p-2">
-                <CardContent className="pb-0 text-center">
-                  İçeriği görmek için butona bas!
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col justify-center items-center image-wrapper">
-            <img src={imageUrl} className="blur-2xl h-[450px]" />
-            <div className="flex flex-col justify-center gap-4 overlay">
-              <Button size="lg" className="text-md">
-                <LockClosedIcon className="mr-2 h-4 w-4" /> İçerik Kilitli
-              </Button>
-              <Card className="p-2">
-                {hasPermission ? (
+                <Card className="p-2">
                   <CardContent className="pb-0 text-center">
-                    <p>İçeriği görmek için konuma gitmelisin!</p>
-                    <p>{distanceRemain && `Kalan mesafe: ${distanceRemain}`}</p>
+                    İçeriği görmek için butona bas!
                   </CardContent>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <CardContent className="pb-0 text-center">
-                      Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
-                    </CardContent>
-
-                    <Button
-                      size="sm"
-                      className="bg-green-700 hover:bg-green-600 text-md"
-                      onClick={() => startWatchingLocation()}
-                    >
-                      Konum İzni Ver
-                    </Button>
-                  </div>
-                )}
-              </Card>
+                </Card>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center image-wrapper">
+              <img src={imageUrl} className="blur-2xl h-[450px]" />
+              <div className="flex flex-col justify-center gap-4 overlay">
+                <Button size="lg" className="text-md">
+                  <LockClosedIcon className="mr-2 h-4 w-4" /> İçerik Kilitli
+                </Button>
+                <Card className="p-2">
+                  {hasPermission ? (
+                    <CardContent className="pb-0 text-center">
+                      <p>İçeriği görmek için konuma gitmelisin!</p>
+                      <p>
+                        {distanceRemain && `Kalan mesafe: ${distanceRemain}`}
+                      </p>
+                    </CardContent>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <CardContent className="pb-0 text-center">
+                        Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
+                      </CardContent>
+
+                      <Button
+                        size="sm"
+                        className="bg-green-700 hover:bg-green-600 text-md"
+                        onClick={() => startWatchingLocation()}
+                      >
+                        Konum İzni Ver
+                      </Button>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 };

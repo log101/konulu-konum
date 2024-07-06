@@ -1,35 +1,34 @@
 ---
-import '@/styles/globals.css';
-import '../styles/locked-page.css';
+import "@/styles/globals.css";
+import "../styles/locked-page.css";
 
-import Layout from '../layouts/Layout.astro';
-import ShareButton from '../components/ShareButton';
+import Layout from "../layouts/Layout.astro";
+import ShareButton from "../components/ShareButton";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import LockedContent from '@/components/LockedContent';
-import { Separator } from '@/components/ui/separator';
-import type { ContentTable } from '@/lib/db';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import utc from 'dayjs/plugin/utc';
+} from "@/components/ui/card";
+import LockedContent from "@/components/LockedContent";
+import WebComponentWrapper from "@/components/WebComponentWrapper.astro";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { Separator } from "@/components/ui/separator";
+import type { ContentTable } from "@/lib/db";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
 
 type Content = ContentTable;
 
 const { id } = Astro.params;
 
-const res = await fetch(
-  `http://localhost:3000/api/location/${id}`
-);
+const res = await fetch(`http://localhost:3000/api/location/${id}`);
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
 
-console.log(data)
+console.log(data);
 
 dayjs.extend(relativeTime);
 
@@ -68,7 +67,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
         <p>{dateFromNow}</p>
       </CardFooter>
     </Card>
-
     <LockedContent
       contentId={data?.url}
       imageUrl={`http://localhost:3000/images/${data?.blob_url}`}

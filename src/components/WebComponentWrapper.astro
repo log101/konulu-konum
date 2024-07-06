@@ -1,0 +1,94 @@
+---
+interface Props {
+  contentId?: string;
+  imageUrl: string;
+  location?: string;
+}
+
+const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
+---
+
+<template id="locked-content-template">
+  <link rel="stylesheet" href="css/tailwind.css" />
+  <style>
+    .image-wrapper {
+      position: relative;
+    }
+
+    .overlay {
+      position: absolute;
+
+      /* center overlay text */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      inset: 0;
+    }
+  </style>
+  <div
+    class="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded"
+  >
+    <div class="flex flex-col justify-center items-center image-wrapper">
+      <img src={imageUrl} class="blur-2xl h-[450px]" />
+
+      <div class="flex flex-col justify-center gap-4 overlay">
+        <button
+          id="unlock-content-button"
+          class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
+        >
+          İçeriğin Kilidi Açıldı
+        </button>
+
+        <div
+          class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
+        >
+          <div class="pb-0 text-center">İçeriği görmek için butona bas!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<locked-content contentId={contentId}></locked-content>
+
+<script>
+  customElements.define(
+    "locked-content",
+    class extends HTMLElement {
+      constructor() {
+        super();
+
+        // Clone the template
+        let template = document.getElementById(
+          "locked-content-template"
+        ) as HTMLTemplateElement;
+        let templateContent = template.content;
+
+        // Get attributes
+        const contentId = this.getAttribute("contentId");
+
+        // Attach cloned template to DOM
+        const shadowRoot = this.attachShadow({ mode: "open" });
+        shadowRoot.appendChild(templateContent.cloneNode(true));
+
+        // Add onclick listener to unlock content button
+        const unlockContentButton = shadowRoot.getElementById(
+          "unlock-content-button"
+        );
+        const incrementCounter = async (id: string) =>
+          await fetch(`http://localhost:3000/api/location/increment/${id}`, {
+            method: "PATCH",
+          });
+
+        if (unlockContentButton) {
+          unlockContentButton.addEventListener("click", () => {
+            if (contentId) {
+              incrementCounter(contentId);
+            }
+          });
+        }
+      }
+    }
+  );
+</script>
