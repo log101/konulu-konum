@@ -42,18 +42,57 @@ class LockedContent extends HTMLElement {
 }
 
 class UnlockContentButton extends HTMLElement {
+  static observedAttributes = ["locked"];
+
   constructor() {
     super();
+  }
 
+  connectedCallback() {
     const host = document.getElementById("locked-content");
 
     if (host) {
-      let template = host.shadowRoot?.getElementById(
-        "unlock-content-button-template"
+      let lockedTemplate = host.shadowRoot?.getElementById(
+        "locked-button-template"
       ) as HTMLTemplateElement;
-      let templateContent = template.content;
+      let lockedTemplateContent = lockedTemplate.content;
 
-      this.appendChild(templateContent.cloneNode(true));
+      let unlockedTemplate = host.shadowRoot?.getElementById(
+        "unlocked-button-template"
+      ) as HTMLTemplateElement;
+      let unlockedTemplateContent = unlockedTemplate.content;
+
+      if (this.hasAttribute("locked")) {
+        this.appendChild(lockedTemplateContent.cloneNode(true));
+      } else {
+        this.appendChild(unlockedTemplateContent.cloneNode(true));
+      }
+    }
+  }
+
+  attributeChangedCallback(name: string, _: string, newValue: string) {
+    if (name != "locked") return;
+    const host = document.getElementById("locked-content");
+
+    if (host) {
+      let lockedTemplate = host.shadowRoot?.getElementById(
+        "locked-button-template"
+      ) as HTMLTemplateElement;
+      let lockedTemplateContent = lockedTemplate.content;
+
+      let unlockedTemplate = host.shadowRoot?.getElementById(
+        "unlocked-button-template"
+      ) as HTMLTemplateElement;
+      let unlockedTemplateContent = unlockedTemplate.content;
+
+      if (newValue == "true") {
+        const child = this.firstElementChild;
+        child?.replaceWith(lockedTemplateContent.cloneNode(true));
+        this.replaceWith;
+      } else {
+        const child = this.firstElementChild;
+        child?.replaceWith(unlockedTemplateContent.cloneNode(true));
+      }
     }
   }
 }
