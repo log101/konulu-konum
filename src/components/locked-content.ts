@@ -9,14 +9,7 @@ class LockedContent extends HTMLElement {
     let templateContent = template.content;
 
     // Get attributes
-    const contentId = this.getAttribute("contentId");
     const imageURL = this.getAttribute("imageURL") ?? "#";
-
-    // Fetch functions
-    const incrementCounter = async (id: string) =>
-      await fetch(`http://localhost:3000/api/location/increment/${id}`, {
-        method: "PATCH",
-      });
 
     // Attach cloned template to DOM
     const shadowRoot = this.attachShadow({ mode: "open" });
@@ -32,17 +25,18 @@ class LockedContent extends HTMLElement {
     );
 
     if (unlockContentButton) {
-      unlockContentButton.addEventListener("click", () => {
-        if (contentId) {
-          incrementCounter(contentId);
-        }
-      });
+      unlockContentButton.addEventListener("click", (el) => {});
     }
   }
 }
 
 class UnlockContentButton extends HTMLElement {
   static observedAttributes = ["locked"];
+
+  private incrementCounter = async (id: string) =>
+    fetch(`http://localhost:3000/api/location/increment/${id}`, {
+      method: "PATCH",
+    });
 
   constructor() {
     super();
@@ -52,6 +46,8 @@ class UnlockContentButton extends HTMLElement {
     const host = document.getElementById("locked-content");
 
     if (host) {
+      const contentId = host.getAttribute("contentId");
+
       let lockedTemplate = host.shadowRoot?.getElementById(
         "locked-button-template"
       ) as HTMLTemplateElement;
@@ -67,6 +63,15 @@ class UnlockContentButton extends HTMLElement {
       } else {
         this.appendChild(unlockedTemplateContent.cloneNode(true));
       }
+
+      this.addEventListener("click", (el) => {
+        if (contentId) {
+          this.incrementCounter(contentId);
+          const imageContent = host.shadowRoot?.getElementById("content");
+          imageContent?.classList.remove("blur-2xl");
+          this.remove();
+        }
+      });
     }
   }
 

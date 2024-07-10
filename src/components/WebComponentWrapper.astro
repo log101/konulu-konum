@@ -1,5 +1,5 @@
 ---
-import { LockClosedIcon } from "@radix-ui/react-icons";
+import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
 
 interface Props {
   contentId?: string;
@@ -17,30 +17,34 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
     <div class="flex flex-col justify-center items-center image-wrapper">
       <img id="content" src="#" class="blur-2xl h-[450px]" />
 
-      <div class="flex flex-col justify-center gap-4 overlay">
-        <template id="unlocked-button-template">
+      <template id="locked-button-template">
+        <div class="flex flex-col justify-center gap-4 overlay">
+          <button
+            id="unlock-content-button"
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
+          >
+            <LockClosedIcon className="mr-2 h-4 w-4" /> İçerik Kilitli
+          </button>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
+          >
+            <div class="pb-0 px-4 text-center">
+              İçeriği görmek için konuma gitmelisin!
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template id="unlocked-button-template">
+        <div class="flex flex-col justify-center gap-4 overlay">
           <button
             id="unlock-content-button"
             class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
           >
+            <LockOpen1Icon className="mr-2 h-4 w-4" />
             İçeriğin Kilidi Açıldı
           </button>
-        </template>
 
-        <template id="locked-button-template">
-          <button
-            id="unlock-content-button"
-            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 text-md"
-          >
-            <LockClosedIcon className="mr-2 h-4 w-4" /> İçerik Kilitli
-          </button>
-        </template>
-
-        <slot name="locked-content-button" />
-
-        <unlock-content-button locked></unlock-content-button>
-
-        <slot name="locked-content-description">
           <div
             class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
           >
@@ -48,8 +52,10 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
               İçeriği görmek için butona bas!
             </div>
           </div>
-        </slot>
-      </div>
+        </div>
+      </template>
+
+      <unlock-content-button></unlock-content-button>
     </div>
   </div>
   <style>

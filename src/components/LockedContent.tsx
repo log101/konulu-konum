@@ -22,7 +22,7 @@ const LocationButton = ({
   imageUrl?: string;
   location?: string;
 }) => {
-  const [atTarget, setAtTarget] = useState(false);
+  const [atTarget, setAtTarget] = useState(true);
   const [contentVisible, setContentVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [watchId, setWatchId] = useState<number>();
@@ -57,7 +57,7 @@ const LocationButton = ({
 
           if (betweenMeters > 1000) {
             setDistanceRemain(`${(betweenMeters / 1000).toFixed()} KM`);
-          } else if (betweenMeters > 50) {
+          } else if (betweenMeters > 200) {
             setDistanceRemain(`${betweenMeters.toFixed(0)} M`);
           } else {
             setAtTarget(true);
