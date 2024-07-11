@@ -22,15 +22,13 @@ const LocationButton = ({
   imageUrl?: string;
   location?: string;
 }) => {
-  const [atTarget, setAtTarget] = useState(true);
+  const [atTarget, setAtTarget] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [watchId, setWatchId] = useState<number>();
   const [distanceRemain, setDistanceRemain] = useState<string>("");
 
   const targetCoordinates = JSON.parse(location);
-
-  console.log("coor", targetCoordinates);
 
   const targetPos = {
     lat: targetCoordinates[0],
@@ -57,9 +55,10 @@ const LocationButton = ({
 
           if (betweenMeters > 1000) {
             setDistanceRemain(`${(betweenMeters / 1000).toFixed()} KM`);
-          } else if (betweenMeters > 200) {
+          } else if (betweenMeters > 100) {
             setDistanceRemain(`${betweenMeters.toFixed(0)} M`);
           } else {
+            navigator.geolocation.clearWatch(id);
             setAtTarget(true);
           }
         },

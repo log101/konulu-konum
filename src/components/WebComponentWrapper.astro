@@ -17,6 +17,30 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
     <div class="flex flex-col justify-center items-center image-wrapper">
       <img id="content" src="#" class="blur-2xl h-[450px]" />
 
+      <template id="permission-button-template">
+        <div class="flex flex-col justify-center gap-4 overlay">
+          <button
+            id="unlock-content-button"
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
+          >
+            <LockClosedIcon className="mr-2 h-4 w-4" /> İçerik Kilitli
+          </button>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
+          >
+            <div class="pb-0 text-center flex flex-col gap-4">
+              <p id="locked-content-description">
+                Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
+              </p>
+              <button
+                class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md"
+                >Konum İzni Ver</button
+              >
+            </div>
+          </div>
+        </div>
+      </template>
+
       <template id="locked-button-template">
         <div class="flex flex-col justify-center gap-4 overlay">
           <button
@@ -29,7 +53,9 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
             class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
           >
             <div class="pb-0 px-4 text-center">
-              İçeriği görmek için konuma gitmelisin!
+              <p id="locked-content-description">
+                İçeriği görmek için konuma gitmelisin!
+              </p>
             </div>
           </div>
         </div>
@@ -49,13 +75,16 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
             class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
           >
             <div class="pb-0 px-4 text-center">
-              İçeriği görmek için butona bas!
+              <p id="locked-content-description">
+                İçeriği görmek için butona bas!
+              </p>
             </div>
           </div>
         </div>
       </template>
 
-      <unlock-content-button></unlock-content-button>
+      <unlock-content-button locked id="unlock-content-button-element"
+      ></unlock-content-button>
     </div>
   </div>
   <style>
@@ -77,7 +106,10 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
   </style>
 </template>
 
-<locked-content contentId={contentId} imageURL={imageUrl} id="locked-content"
-></locked-content>
+<locked-content
+  contentId={contentId}
+  imageURL={imageUrl}
+  targetPos={location}
+  id="locked-content"></locked-content>
 
 <script src="../components/locked-content.ts"></script>

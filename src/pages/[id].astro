@@ -28,8 +28,6 @@ const res = await fetch(`http://localhost:3000/api/location/${id}`);
 
 const data: Content | null = res.status === 200 ? await res.json() : null;
 
-console.log(data);
-
 dayjs.extend(relativeTime);
 
 dayjs.extend(utc);
@@ -72,12 +70,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       contentId={data?.url}
       imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
       location={data?.loc}
-    />
-    <LockedContent
-      contentId={data?.url}
-      imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
-      location={data?.loc}
-      client:load
     />
 
     <div
