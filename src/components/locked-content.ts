@@ -2,7 +2,6 @@ import L, { type LatLngTuple } from "leaflet";
 import Toastify from "toastify-js";
 
 class LockedContent extends HTMLElement {
-  unlockButtonElement: HTMLElement | null;
   watchId: number;
   targetPos: LatLngTuple;
   geolocationOptions = {
