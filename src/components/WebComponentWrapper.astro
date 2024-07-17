@@ -113,8 +113,10 @@ const { contentId = "", imageUrl = "#", location = "" } = Astro.props;
   targetPos={location}
   id="locked-content"></locked-content>
 -->
-<locked-content-lit imageId="sample" imageURL={imageUrl} targetPosition="[1,1]"
-></locked-content-lit>
+<locked-content-lit
+  imageId={contentId}
+  imageURL={imageUrl}
+  targetPosition={location}></locked-content-lit>
 
 <script src="../components/locked-content.ts"></script>
 <script src="../components/locked-content-lit.ts"></script>
