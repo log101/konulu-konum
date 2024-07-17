@@ -1,4 +1,4 @@
-import { LitElement, html, unsafeCSS, type CSSResultGroup } from "lit";
+import { LitElement, html, nothing, unsafeCSS, type CSSResultGroup } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import L, { type LatLngTuple } from "leaflet";
@@ -35,7 +35,9 @@ export class LockedContent extends LitElement {
   @state()
   protected _unlocked = false;
   @state()
-  protected _targetProximity?: string;
+  protected _arrived = false;
+  @state()
+  protected _targetProximityText?: string;
   @state()
   protected _watchId?: number;
 
@@ -57,13 +59,13 @@ export class LockedContent extends LitElement {
     const betweenMeters = currentLatLng.distanceTo(targetLatLng);
 
     if (betweenMeters > 1000) {
-      this._targetProximity = `${(betweenMeters / 1000).toFixed()} KM`;
+      this._targetProximityText = `${(betweenMeters / 1000).toFixed()} KM`;
     } else if (betweenMeters > 100) {
-      this._targetProximity = `${betweenMeters.toFixed(0)} M`;
+      this._targetProximityText = `${betweenMeters.toFixed(0)} M`;
     } else {
       if (this._watchId) {
         navigator.geolocation.clearWatch(this._watchId);
-        this._unlocked = true;
+        this._arrived = true;
       }
     }
   }
@@ -145,7 +147,7 @@ export class LockedContent extends LitElement {
         <div class="pb-0 px-4 text-center">
           <p id="locked-content-description">
             İçeriği görmek için konuma gitmelisin! Kalan mesafe:
-            ${this._targetProximity}
+            ${this._targetProximityText}
           </p>
         </div>
       </div>
@@ -155,6 +157,10 @@ export class LockedContent extends LitElement {
   unlockedButtonTemplate() {
     return html` <div class="flex flex-col justify-center gap-4 overlay">
       <button
+        @click="${() => {
+          this._incrementUnlockCounter(this.imageId);
+          this._unlocked = true;
+        }}"
         id="unlock-content-button"
         class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
       >
@@ -180,6 +186,14 @@ export class LockedContent extends LitElement {
     this._watchId = id;
   }
 
+  private async _incrementUnlockCounter(id: string | undefined) {
+    if (id) {
+      fetch(`http://localhost:3000/api/location/increment/${id}`, {
+        method: "PATCH",
+      });
+    }
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
 
@@ -203,7 +217,7 @@ export class LockedContent extends LitElement {
   render() {
     let buttonTemplate;
 
-    if (this._unlocked) {
+    if (this._arrived) {
       buttonTemplate = this.unlockedButtonTemplate.bind(this);
     } else if (this._hasGeolocationPermission) {
       buttonTemplate = this.lockedButtonTemplate.bind(this);
@@ -216,9 +230,13 @@ export class LockedContent extends LitElement {
         class="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded"
       >
         <div class="flex flex-col justify-center items-center image-wrapper">
-          <img id="content" src="${this.imageURL}" class="blur-2xl h-[450px]" />
+          <img
+            id="content"
+            src="${this.imageURL}"
+            class="${this._unlocked ? "" : "blur-2xl"} h-[450px]"
+          />
 
-          ${buttonTemplate()}
+          ${this._unlocked ? nothing : buttonTemplate()}
         </div>
       </div>
     `;
