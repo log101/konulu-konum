@@ -29,6 +29,27 @@ function permissionButtonTemplate(onClickHandler: () => void) {
   `;
 }
 
+// This template is shown when user has not given permission
+function permissionDeniedButtonTemplate() {
+  return html`<div class="flex flex-col justify-center gap-4 overlay">
+    <button
+      id="unlock-content-button"
+      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
+    >
+      ${lockSVG}
+      <p>İçerik Kilitli</p>
+    </button>
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-2">
+      <div class="pb-0 px-4 text-center">
+        <p id="locked-content-description">
+          Konumuna erişim izni vermediğin için hedefe ne kadar <br />
+          yakın olduğun tespit edilemiyor.
+        </p>
+      </div>
+    </div>
+  </div>`;
+}
+
 // This template is shown when user has given permission but has not arrived yet
 function lockedButtonTemplate(proximityText: string | undefined) {
   return html`<div class="flex flex-col justify-center gap-4 overlay">
@@ -75,4 +96,5 @@ export {
   lockedButtonTemplate,
   unlockedButtonTemplate,
   permissionButtonTemplate,
+  permissionDeniedButtonTemplate,
 };

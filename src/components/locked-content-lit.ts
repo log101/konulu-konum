@@ -13,6 +13,7 @@ import lockedContentStyles from "../styles/locked-content.css?inline";
 import {
   lockedButtonTemplate,
   permissionButtonTemplate,
+  permissionDeniedButtonTemplate,
   unlockedButtonTemplate,
 } from "./LockedContent/templates";
 
@@ -46,7 +47,7 @@ export class LockedContent extends LitElement {
 
   // Reactive states, template is rendered according to this states
   @state()
-  protected _hasGeolocationPermission = false;
+  protected _geolocationPermissionStatus: PermissionState = "prompt";
   @state()
   protected _unlocked = false;
   @state()
@@ -59,7 +60,7 @@ export class LockedContent extends LitElement {
   // This callback will be fired when geolocation info is available
   successCallback(position: GeolocationPosition) {
     // Set hasGeolocationPermission state true to change the template
-    if (!this._hasGeolocationPermission) this._hasGeolocationPermission = true;
+    this._geolocationPermissionStatus = "granted";
 
     // Target position must be set
     if (!this.targetPosition) return;
@@ -121,7 +122,12 @@ export class LockedContent extends LitElement {
 
     const id = navigator.geolocation.watchPosition(
       this.successCallback.bind(this),
-      errorCallback,
+      (err) => {
+        if (err.code == GeolocationPositionError.PERMISSION_DENIED) {
+          this._geolocationPermissionStatus = "denied";
+        }
+        errorCallback(err);
+      },
       this.geolocationOptions
     );
 
@@ -141,6 +147,7 @@ export class LockedContent extends LitElement {
             this._startWatchingLocation();
             break;
           case "denied":
+            this._geolocationPermissionStatus = "denied";
           case "prompt":
           default:
             break;
@@ -158,10 +165,12 @@ export class LockedContent extends LitElement {
     // 4 - User did not give geolocation permission
     if (this._arrived) {
       buttonTemplate = this._unlockedButtonTemplate;
-    } else if (this._hasGeolocationPermission) {
+    } else if (this._geolocationPermissionStatus == "granted") {
       buttonTemplate = this._lockedButtonTemplate;
-    } else {
+    } else if (this._geolocationPermissionStatus == "prompt") {
       buttonTemplate = this._permissionButtonTemplate;
+    } else {
+      buttonTemplate = permissionDeniedButtonTemplate;
     }
 
     return html`
