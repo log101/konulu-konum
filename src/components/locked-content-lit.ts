@@ -1,12 +1,27 @@
+// Lit imports
 import { LitElement, html, nothing, unsafeCSS, type CSSResultGroup } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import L, { type LatLngTuple } from "leaflet";
-import Toastify from "toastify-js";
+// Leaflet
+import { type LatLngTuple } from "leaflet";
 
+// Styles
 import globalStyles from "@/styles/globals.css?inline";
 import lockedContentStyles from "../styles/locked-content.css?inline";
 
+// Templates
+import {
+  lockedButtonTemplate,
+  permissionButtonTemplate,
+  unlockedButtonTemplate,
+} from "./LockedContent/templates";
+
+// Geolocation utils
+import { calculateDistance, errorCallback } from "./LockedContent/geolocation";
+import { incrementUnlockCounter } from "./LockedContent/middleware";
+
+// LockedContent is a custom element watching user location and blurring
+// given image until user has arrived a certain position
 @customElement("locked-content-lit")
 export class LockedContent extends LitElement {
   // Constants
@@ -37,210 +52,80 @@ export class LockedContent extends LitElement {
   @state()
   protected _arrived = false;
   @state()
-  protected _targetProximityText?: string;
+  protected _distanceText?: string;
   @state()
   protected _watchId?: number;
-
-  // Locked lock icon
-  lockSVG = html`<svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    fill="#ffffff"
-    viewBox="0 0 256 256"
-  >
-    <path
-      d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z"
-    ></path>
-  </svg>`;
-
-  // Unlocked lock icon
-  unlockSVG = html`
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      fill="#ffffff"
-      viewBox="0 0 256 256"
-    >
-      <path
-        d="M208,80H96V56a32,32,0,0,1,32-32c15.37,0,29.2,11,32.16,25.59a8,8,0,0,0,15.68-3.18C171.32,24.15,151.2,8,128,8A48.05,48.05,0,0,0,80,56V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm0,128H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z"
-      ></path>
-    </svg>
-  `;
 
   // This callback will be fired when geolocation info is available
   successCallback(position: GeolocationPosition) {
     // Set hasGeolocationPermission state true to change the template
     if (!this._hasGeolocationPermission) this._hasGeolocationPermission = true;
 
-    const pos = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
-
-    // targetPosition attribute must be set for geolocation feature to work
+    // Target position must be set
     if (!this.targetPosition) return;
 
-    // Get target position in latitudes and longitudes
-    const targetLatLng = L.latLng(this.targetPosition);
-
-    // Get current position in latitudes and longitudes
-    const currentLatLng = L.latLng(pos);
-
     // Calculate the distance between target and current position in meters
-    const betweenMeters = currentLatLng.distanceTo(targetLatLng);
+    const distance = calculateDistance(position, this.targetPosition);
 
+    // Update the text based on the distance
+    this._updateDistanceText(distance);
+
+    this._checkArrived(distance);
+  }
+
+  private _updateDistanceText(distance: number) {
     // Update the proximity text according to the distance remaining
-    if (betweenMeters > 1000) {
-      this._targetProximityText = `${(betweenMeters / 1000).toFixed()} KM`;
-    } else if (betweenMeters > 100) {
-      this._targetProximityText = `${betweenMeters.toFixed(0)} M`;
-    } else {
-      // If target is close less then 100 meters user has arrived to target location
-      if (this._watchId) {
-        // Stop watching location
-        navigator.geolocation.clearWatch(this._watchId);
-        // Update state to reveal the image
-        this._arrived = true;
-      }
+    if (distance > 1000) {
+      this._distanceText = `${(distance / 1000).toFixed()} KM`;
+    } else if (distance > 100) {
+      this._distanceText = `${distance.toFixed(0)} M`;
     }
   }
 
-  // This callback will be fired on geolocation error
-  errorCallback(err: GeolocationPositionError) {
-    let errorMessage;
-    // Show toast accoring to the error state
-    switch (err.code) {
-      case GeolocationPositionError.PERMISSION_DENIED:
-        errorMessage =
-          "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.";
-        break;
-      case GeolocationPositionError.POSITION_UNAVAILABLE:
-        errorMessage =
-          "Konumunuz tespit edilemedi, lütfen biraz sonra tekrar deneyiniz.";
-        break;
-      case GeolocationPositionError.TIMEOUT:
-        errorMessage =
-          "Konum isteği zaman aşımına uğradı, lütfen sayfayı yenileyip tekrar deneyiniz.";
-        break;
-      default:
-        errorMessage =
-          "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.";
-        break;
+  private _checkArrived(distance: number) {
+    // If target is close less then 100 meters user has arrived to target location
+    if (distance < 100) {
+      if (this._watchId) {
+        // Stop watching location
+        navigator.geolocation.clearWatch(this._watchId);
+      }
+      // Update state to reveal the image
+      this._arrived = true;
     }
-
-    Toastify({
-      text: errorMessage,
-      duration: 3000,
-      gravity: "top",
-      position: "center",
-      stopOnFocus: true,
-      style: {
-        background: "black",
-        borderRadius: "6px",
-        margin: "16px",
-      },
-      onClick: function () {},
-    }).showToast();
   }
 
   // This template is shown when user hasn't give geolocation permission yet
   // When user click the button user is asked for geolocation permission
-  permissionButtonTemplate() {
-    return html`
-      <div class="flex flex-col justify-center gap-4 overlay">
-        <button
-          id="unlock-content-button"
-          class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-        >
-          İçerik Kilitli
-        </button>
-        <div
-          class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
-        >
-          <div class="pb-0 text-center flex flex-col gap-4">
-            <p id="locked-content-description">
-              Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
-            </p>
-            <button
-              @click="${this._startWatchingLocation}"
-              class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md"
-            >
-              Konum İzni Ver
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
+  private _permissionButtonTemplate = () =>
+    permissionButtonTemplate(this._startWatchingLocation);
 
   // This template is shown when user has given permission but has not arrived yet
-  lockedButtonTemplate() {
-    return html`<div class="flex flex-col justify-center gap-4 overlay">
-      <button
-        id="unlock-content-button"
-        class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-      >
-        ${this.lockSVG}
-        <p>İçerik Kilitli</p>
-      </button>
-      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-2">
-        <div class="pb-0 px-4 text-center">
-          <p id="locked-content-description">
-            İçeriği görmek için konuma gitmelisin! Kalan mesafe:
-            ${this._targetProximityText}
-          </p>
-        </div>
-      </div>
-    </div>`;
-  }
+  private _lockedButtonTemplate = () =>
+    lockedButtonTemplate(this._distanceText);
 
   // This template is shown when user has arrived to the target location
   // When user click the button counter at the bottom of the page is incremented
   // and image is revealed
-  unlockedButtonTemplate() {
-    return html` <div class="flex flex-col justify-center gap-4 overlay">
-      <button
-        @click="${() => {
-          this._incrementUnlockCounter(this.imageId);
-          this._unlocked = true;
-        }}"
-        id="unlock-content-button"
-        class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
-      >
-        ${this.unlockSVG}
-        <p>İçeriğin Kilidi Açıldı</p>
-      </button>
-
-      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-2">
-        <div class="pb-0 px-4 text-center">
-          <p id="locked-content-description">İçeriği görmek için butona bas!</p>
-        </div>
-      </div>
-    </div>`;
-  }
+  private _unlockedButtonTemplate = () =>
+    unlockedButtonTemplate(() => {
+      incrementUnlockCounter(this.imageId);
+      this._unlocked = true;
+    });
 
   // Start watching user location, if user has not given permission yet
   // this will ask the user for permission and update the watch id
   private _startWatchingLocation() {
+    // User is already being watched no need to
+    // watch position
+    if (this._watchId) return;
+
     const id = navigator.geolocation.watchPosition(
       this.successCallback.bind(this),
-      this.errorCallback.bind(this),
+      errorCallback,
       this.geolocationOptions
     );
 
     this._watchId = id;
-  }
-
-  // This counter is shown at the bottom of the page and incremented
-  // each time "show content" button is clicked
-  private async _incrementUnlockCounter(id: string | undefined) {
-    if (id) {
-      fetch(`http://localhost:3000/api/location/increment/${id}`, {
-        method: "PATCH",
-      });
-    }
   }
 
   connectedCallback(): void {
@@ -253,13 +138,11 @@ export class LockedContent extends LitElement {
       .then((permissionStatus) => {
         switch (permissionStatus.state) {
           case "granted":
-            this._hasGeolocationPermission = true;
             this._startWatchingLocation();
             break;
           case "denied":
           case "prompt":
           default:
-            this._hasGeolocationPermission = false;
             break;
         }
       });
@@ -274,11 +157,11 @@ export class LockedContent extends LitElement {
     // 3 - Arrived to target position
     // 4 - User did not give geolocation permission
     if (this._arrived) {
-      buttonTemplate = this.unlockedButtonTemplate.bind(this);
+      buttonTemplate = this._unlockedButtonTemplate;
     } else if (this._hasGeolocationPermission) {
-      buttonTemplate = this.lockedButtonTemplate.bind(this);
+      buttonTemplate = this._lockedButtonTemplate;
     } else {
-      buttonTemplate = this.permissionButtonTemplate.bind(this);
+      buttonTemplate = this._permissionButtonTemplate;
     }
 
     return html`
@@ -289,7 +172,7 @@ export class LockedContent extends LitElement {
           <img
             id="content"
             src="${this.imageURL}"
-            class="${this._unlocked ? nothing : "blur-2xl"} h-[450px]"
+            class="h-[450px] ${this._unlocked ? "" : "blur-2xl"}"
           />
 
           ${this._unlocked ? nothing : buttonTemplate()}
