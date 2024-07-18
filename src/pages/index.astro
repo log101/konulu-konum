@@ -170,6 +170,24 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
+      const inputEl = document.getElementById(
+        "photo-selector"
+      ) as HTMLInputElement | null;
+
+      if (!inputEl) return;
+
+      const files = inputEl.files;
+
+      if (!files) return;
+
+      if (files.length > 0) {
+        if (files[0].size > 4 * 1024 * 1024) {
+          inputEl.setCustomValidity("Dosya boyutu 4 MB'den küçük olmalıdır.");
+          inputEl.reportValidity();
+          return;
+        }
+      }
+
       const submitButton = document.getElementById(
         "submit-button"
       ) as HTMLButtonElement;
