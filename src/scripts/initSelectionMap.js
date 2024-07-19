@@ -48,7 +48,7 @@ map.on('locationerror', onLocationError);
 
 map.on('locationfound', onLocationSuccess)
 
-L.Control.GoToCurrentLocation = L.Control.extend({
+L.Control.AskPermisson = L.Control.extend({
     onAdd: function (map) {
         const locationButton = document.createElement('button');
 
@@ -90,11 +90,11 @@ L.Control.GoToCurrentLocation = L.Control.extend({
     },
 });
 
-L.control.currentLocation = function (opts) {
-    return new L.Control.GoToCurrentLocation(opts);
+L.control.askPermission = function (opts) {
+    return new L.Control.AskPermisson(opts);
 };
 
-L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
+L.control.askPermission({ position: 'bottomleft' }).addTo(map);
 
 
 map.on('click', (e) => {

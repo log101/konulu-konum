@@ -1,4 +1,4 @@
-import { html, type TemplateResult } from "lit";
+import { html } from "lit";
 import { lockSVG, unlockSVG } from "./svg";
 
 // This template is shown when user hasn't give geolocation permission yet
