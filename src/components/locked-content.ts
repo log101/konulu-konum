@@ -1,214 +1,192 @@
-import L, { type LatLngTuple } from "leaflet";
-import Toastify from "toastify-js";
+// Lit imports
+import { LitElement, html, nothing, unsafeCSS, type CSSResultGroup } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
-class LockedContent extends HTMLElement {
-  watchId: number;
-  targetPos: LatLngTuple;
+// Leaflet
+import { type LatLngTuple } from "leaflet";
+
+// Styles
+import globalStyles from "@/styles/globals.css?inline";
+import lockedContentStyles from "../styles/locked-content.css?inline";
+
+// Templates
+import {
+  lockedButtonTemplate,
+  permissionButtonTemplate,
+  permissionDeniedButtonTemplate,
+  unlockedButtonTemplate,
+} from "./LockedContent/templates";
+
+// Geolocation utils
+import { calculateDistance, errorCallback } from "./LockedContent/geolocation";
+import { incrementUnlockCounter } from "./LockedContent/serverUtils";
+
+// LockedContent is a custom element watching user location and blurring
+// given image until user has arrived a certain position
+@customElement("locked-content")
+export class LockedContent extends LitElement {
+  // Constants
   geolocationOptions = {
     enableHighAccuracy: true,
-    timeout: 5000,
+    timeout: 15000,
     maximumAge: 0,
   };
 
-  constructor() {
-    super();
+  // Tailwind and custom styles
+  static styles: CSSResultGroup | undefined = [
+    unsafeCSS(globalStyles),
+    unsafeCSS(lockedContentStyles),
+  ];
 
-    // Clone the template
-    let template = document.getElementById(
-      "locked-content-template"
-    ) as HTMLTemplateElement;
-    let templateContent = template.content;
+  // Components properties/attributes, no accessor attribute disables detecting
+  // changes as these are readonly attriubtes there is no need to attach setters
+  @property({ noAccessor: true }) readonly imageId?: string;
+  @property({ noAccessor: true }) readonly imageURL?: string;
+  @property({ type: Object, noAccessor: true })
+  readonly targetPosition?: LatLngTuple;
 
-    // Get attributes
-    const imageURL = this.getAttribute("imageURL") ?? "#";
-    const targetPosAttribute = this.getAttribute("targetPos") ?? "[]";
-    this.targetPos = JSON.parse(targetPosAttribute);
-
-    // Attach cloned template to DOM
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(templateContent.cloneNode(true));
-
-    // Set image source URL
-    const content = shadowRoot.getElementById("content") as HTMLImageElement;
-    content.src = imageURL;
-
-    // start geolocation services
-    const id = navigator.geolocation.watchPosition(
-      this.successCallback.bind(this),
-      this.errorCallback,
-      this.geolocationOptions
-    );
-
-    this.watchId = id;
-  }
-
-  changeDescription(description: string) {
-    const descriptionElement = this?.shadowRoot?.getElementById(
-      "locked-content-description"
-    );
-
-    if (descriptionElement) {
-      descriptionElement.innerText = description;
-    }
-  }
-
-  unlockContent() {
-    const unlockButton = this?.shadowRoot?.getElementById(
-      "unlock-content-button-element"
-    );
-
-    if (unlockButton) {
-      unlockButton.removeAttribute("locked");
-    }
-  }
+  // Reactive states, template is rendered according to this states
+  @state()
+  protected _geolocationPermissionStatus: PermissionState = "prompt";
+  @state()
+  protected _unlocked = false;
+  @state()
+  protected _arrived = false;
+  @state()
+  protected _distanceText?: string;
+  @state()
+  protected _watchId?: number;
 
   // This callback will be fired when geolocation info is available
   successCallback(position: GeolocationPosition) {
-    const pos = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
+    // Set hasGeolocationPermission state true to change the template
+    this._geolocationPermissionStatus = "granted";
 
-    const targetLatLng = L.latLng(this.targetPos);
+    // Target position must be set
+    if (!this.targetPosition) return;
 
-    const currentLatLng = L.latLng(pos);
+    // Calculate the distance between target and current position in meters
+    const distance = calculateDistance(position, this.targetPosition);
 
-    const betweenMeters = currentLatLng.distanceTo(targetLatLng);
+    // Update the text based on the distance
+    this._updateDistanceText(distance);
 
-    if (betweenMeters > 1000) {
-      this.changeDescription(`${(betweenMeters / 1000).toFixed()} KM`);
-    } else if (betweenMeters > 100) {
-      this.changeDescription(`${betweenMeters.toFixed(0)} M`);
-    } else {
-      navigator.geolocation.clearWatch(this.watchId);
-      this.unlockContent();
+    this._checkArrived(distance);
+  }
+
+  private _updateDistanceText(distance: number) {
+    // Update the proximity text according to the distance remaining
+    if (distance > 1000) {
+      this._distanceText = `${(distance / 1000).toFixed()} KM`;
+    } else if (distance > 100) {
+      this._distanceText = `${distance.toFixed(0)} M`;
     }
   }
 
-  // This callback will be fired on geolocation error
-  errorCallback(err: GeolocationPositionError) {
-    let errorMessage;
-    switch (err.code) {
-      case GeolocationPositionError.PERMISSION_DENIED:
-        errorMessage =
-          "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.";
-        break;
-      case GeolocationPositionError.POSITION_UNAVAILABLE:
-        errorMessage =
-          "Konumunuz tespit edilemedi, lütfen biraz sonra tekrar deneyiniz.";
-        break;
-      case GeolocationPositionError.TIMEOUT:
-        errorMessage =
-          "Konum isteği zaman aşımına uğradı, lütfen sayfayı yenileyip tekrar deneyiniz.";
-        break;
-      default:
-        errorMessage =
-          "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.";
-        break;
+  private _checkArrived(distance: number) {
+    // If target is close less then 100 meters user has arrived to target location
+    if (distance < 100) {
+      if (this._watchId) {
+        // Stop watching location
+        navigator.geolocation.clearWatch(this._watchId);
+      }
+      // Update state to reveal the image
+      this._arrived = true;
     }
-
-    Toastify({
-      text: errorMessage,
-      duration: 3000,
-      gravity: "top", // `top` or `bottom`
-      position: "center", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      style: {
-        background: "black",
-        borderRadius: "6px",
-        margin: "16px",
-      },
-      onClick: function () {}, // Callback after click
-    }).showToast();
   }
-}
 
-class UnlockContentButton extends HTMLElement {
-  host: HTMLElement | null;
-  // Templates are required to create nodes
-  permissionTemplateContent: DocumentFragment | null;
-  lockedTemplateContent: DocumentFragment | null;
-  unlockedTemplateContent: DocumentFragment | null;
+  // This template is shown when user hasn't give geolocation permission yet
+  // When user click the button user is asked for geolocation permission
+  private _permissionButtonTemplate = () =>
+    permissionButtonTemplate(this._startWatchingLocation);
 
-  // Image element to blur and show when user is on target
-  imageElement: HTMLElement | null;
+  // This template is shown when user has given permission but has not arrived yet
+  private _lockedButtonTemplate = () =>
+    lockedButtonTemplate(this._distanceText);
 
-  // Content id is required to count how many times a content
-  // is unlocked
-  contentId: string | null;
-
-  static observedAttributes = ["locked"];
-
-  incrementCounter = async (id: string) =>
-    fetch(`http://localhost:3000/api/location/increment/${id}`, {
-      method: "PATCH",
+  // This template is shown when user has arrived to the target location
+  // When user click the button counter at the bottom of the page is incremented
+  // and image is revealed
+  private _unlockedButtonTemplate = () =>
+    unlockedButtonTemplate(() => {
+      incrementUnlockCounter(this.imageId);
+      this._unlocked = true;
     });
 
-  constructor() {
-    super();
+  // Start watching user location, if user has not given permission yet
+  // this will ask the user for permission and update the watch id
+  private _startWatchingLocation() {
+    // User is already being watched no need to
+    // watch position
+    if (this._watchId) return;
 
-    const host = document.getElementById("locked-content");
-    this.host = host;
-
-    this.contentId = host?.getAttribute("contentId") ?? null;
-
-    let permissionTemplate = host?.shadowRoot?.getElementById(
-      "locked-button-template"
-    ) as HTMLTemplateElement | null;
-    this.permissionTemplateContent = permissionTemplate?.content ?? null;
-
-    let lockedTemplate = host?.shadowRoot?.getElementById(
-      "locked-button-template"
-    ) as HTMLTemplateElement | null;
-    this.lockedTemplateContent = lockedTemplate?.content ?? null;
-
-    let unlockedTemplate = host?.shadowRoot?.getElementById(
-      "unlocked-button-template"
-    ) as HTMLTemplateElement | null;
-    this.unlockedTemplateContent = unlockedTemplate?.content ?? null;
-
-    this.imageElement = host?.shadowRoot?.getElementById("content") ?? null;
-  }
-
-  connectedCallback() {
-    if (this.hasAttribute("locked")) {
-      if (this.lockedTemplateContent) {
-        this.appendChild(this.lockedTemplateContent.cloneNode(true));
-      }
-    } else {
-      if (this.unlockedTemplateContent) {
-        this.appendChild(this.unlockedTemplateContent.cloneNode(true));
-      }
-    }
-  }
-
-  attributeChangedCallback(name: string, _: string, newValue: string) {
-    if (name != "locked") return;
-
-    if (newValue == "true") {
-      const child = this.firstElementChild;
-      if (this.lockedTemplateContent)
-        child?.replaceWith(this.lockedTemplateContent.cloneNode(true));
-      this.replaceWith;
-    } else {
-      const child = this.firstElementChild;
-      if (this.unlockedTemplateContent)
-        child?.replaceWith(this.unlockedTemplateContent.cloneNode(true));
-
-      const unlockButton = this.host?.shadowRoot?.getElementById(
-        "unlock-content-button"
-      );
-
-      unlockButton?.addEventListener("click", (el) => {
-        if (this.contentId) {
-          this.incrementCounter(this.contentId);
+    const id = navigator.geolocation.watchPosition(
+      this.successCallback.bind(this),
+      (err) => {
+        if (err.code == GeolocationPositionError.PERMISSION_DENIED) {
+          this._geolocationPermissionStatus = "denied";
         }
-        this.imageElement?.classList.remove("blur-2xl");
-        this.remove();
+        errorCallback(err);
+      },
+      this.geolocationOptions
+    );
+
+    this._watchId = id;
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+
+    // Check geolocation permission, if user has given permission before
+    // start watching user location
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        switch (permissionStatus.state) {
+          case "granted":
+            this._startWatchingLocation();
+            break;
+          case "denied":
+            this._geolocationPermissionStatus = "denied";
+          case "prompt":
+          default:
+            break;
+        }
       });
+  }
+
+  render() {
+    let buttonTemplate;
+
+    // Determine which template to show, there are 3 states:
+    // 1 - No geolocation permission given
+    // 2 - Permission given but has no arrived to target position yet
+    // 3 - Arrived to target position
+    // 4 - User did not give geolocation permission
+    if (this._arrived) {
+      buttonTemplate = this._unlockedButtonTemplate;
+    } else if (this._geolocationPermissionStatus == "granted") {
+      buttonTemplate = this._lockedButtonTemplate;
+    } else if (this._geolocationPermissionStatus == "prompt") {
+      buttonTemplate = this._permissionButtonTemplate;
+    } else {
+      buttonTemplate = permissionDeniedButtonTemplate;
     }
+
+    return html`
+      <div
+        class="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded"
+      >
+        <div class="flex flex-col justify-center items-center image-wrapper">
+          <img
+            id="content"
+            src="${this.imageURL}"
+            class="h-[450px] ${this._unlocked ? "" : "blur-2xl"}"
+          />
+
+          ${this._unlocked ? nothing : buttonTemplate()}
+        </div>
+      </div>
+    `;
   }
 }
-
-customElements.define("locked-content", LockedContent);
-customElements.define("unlock-content-button", UnlockContentButton);

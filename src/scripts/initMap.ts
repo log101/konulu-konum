@@ -1,5 +1,7 @@
 import L from "leaflet";
 
+type TargetLocation = [lat: number, lng: number] | null;
+
 const mapEl = document.getElementById("map");
 
 var targetLocationIcon = L.icon({
@@ -14,19 +16,13 @@ var currentLocationIcon = L.icon({
 
 const targetLocation = mapEl?.dataset.targetLocation;
 
-const data = JSON.parse(targetLocation ?? "{}");
-const TARGET_LOCATION = data;
+const data = targetLocation ? JSON.parse(targetLocation) : null;
 
-var map = L.map("map").setView(TARGET_LOCATION, 13);
+const TARGET_LOCATION = data as TargetLocation;
 
-L.marker(TARGET_LOCATION, { icon: targetLocationIcon }).addTo(map);
+var map = L.map("map");
 
-L.circle(TARGET_LOCATION, {
-  color: "blue",
-  fillColor: "#30f",
-  fillOpacity: 0.2,
-  radius: 50,
-}).addTo(map);
+if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 13);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -161,7 +157,7 @@ L.Control.GoToTargetLocation = L.Control.extend({
     locationButton.classList.add("custom-map-control-button");
 
     locationButton.addEventListener("click", () => {
-      map.setView(TARGET_LOCATION, 18);
+      if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 18);
     });
 
     return locationButton;
@@ -201,10 +197,22 @@ const targetLocationControl = L.control.targetLocation({
   position: "bottomleft",
 });
 
+function addTargetLocationMarker(target: TargetLocation) {
+  if (target) {
+    L.marker(target, { icon: targetLocationIcon }).addTo(map);
+
+    L.circle(target, {
+      color: "blue",
+      fillColor: "#30f",
+      fillOpacity: 0.2,
+      radius: 50,
+    }).addTo(map);
+  }
+}
+
 function startWatchingLocation() {
   goToCurrentLocationControl.addTo(map);
   askPermissionControl.remove();
-  map.locate({ watch: true });
 }
 
 function initLocationControls() {
@@ -227,4 +235,5 @@ function initLocationControls() {
     });
 }
 
+addTargetLocationMarker(TARGET_LOCATION);
 initLocationControls();

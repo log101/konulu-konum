@@ -1,5 +1,5 @@
 import { html } from "lit";
-import { lockSVG, unlockSVG } from "./svg";
+import { lockSVG, unlockSVG } from "./icons";
 
 // This template is shown when user hasn't give geolocation permission yet
 // When user click the button user is asked for geolocation permission

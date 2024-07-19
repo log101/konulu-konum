@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import WebComponentWrapper from "@/components/WebComponentWrapper.astro";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
 import type { ContentTable } from "@/lib/db";
@@ -65,11 +64,12 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </CardFooter>
     </Card>
 
-    <WebComponentWrapper
-      contentId={data?.url}
-      imageUrl={`http://localhost:3000/images/${data?.blob_url}`}
-      location={data?.loc}
-    />
+    <locked-content
+      imageId={data?.url}
+      imageURL={`http://localhost:3000/images/${data?.blob_url}`}
+      targetPosition={data?.loc}></locked-content>
+
+    <leaflet-map targetLocation={data?.loc}></leaflet-map>
 
     <div
       id="map"
@@ -86,4 +86,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     </div>
   </main>
   <script src="../scripts/initMap.ts"></script>
+  <script src="../components/locked-content.ts"></script>
+  <script src="../components/leaflet-map.ts"></script>
 </Layout>
