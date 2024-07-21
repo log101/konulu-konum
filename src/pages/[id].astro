@@ -71,13 +71,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
 
     <leaflet-map targetLocation={data?.loc}></leaflet-map>
 
-    <div
-      id="map"
-      class="w-full h-[450px] rounded"
-      data-target-location={data?.loc}
-    >
-    </div>
-
     <ShareButton client:only />
     <div class="flex justify-center">
       <p class="text-muted-foreground">
@@ -85,7 +78,7 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </p>
     </div>
   </main>
-  <script src="../scripts/initMap.ts"></script>
+  <!-- <script src="../scripts/initMap.ts"></script> -->
   <script src="../components/locked-content.ts"></script>
   <script src="../components/leaflet-map.ts"></script>
 </Layout>
