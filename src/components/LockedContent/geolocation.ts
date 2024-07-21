@@ -40,19 +40,14 @@ function errorCallback(err: GeolocationPositionError) {
 }
 
 function calculateDistance(
-  currentPosition: GeolocationPosition,
+  currentPosition: L.LatLngTuple,
   targetPosition: L.LatLngTuple
 ) {
-  const pos = {
-    lat: currentPosition.coords.latitude,
-    lng: currentPosition.coords.longitude,
-  };
-
   // Get target position in latitudes and longitudes
   const targetLatLng = L.latLng(targetPosition);
 
   // Get current position in latitudes and longitudes
-  const currentLatLng = L.latLng(pos);
+  const currentLatLng = L.latLng(currentPosition);
 
   // Calculate the distance between target and current position in meters
   const betweenMeters = currentLatLng.distanceTo(targetLatLng);

@@ -24,21 +24,10 @@ const GoToTargetControl = L.Control.extend({
 });
 
 const GeolocationControl = L.Control.extend({
-  options: {
-    title: "Konum İzni Ver",
-  },
-  _watchingLocation: false,
   _containerEl: null as HTMLButtonElement | null,
   _currentLocationMarker: null as L.Marker | null,
   setCurrentLocationMarker: function (marker?: L.Marker) {
     if (marker) this._currentLocationMarker = marker;
-  },
-  initialize: function (options: any) {
-    L.Util.setOptions(this, options);
-  },
-  startWatching: function () {
-    this._watchingLocation = true;
-    if (this._containerEl) this._containerEl.textContent = "Konumuma Git";
   },
   onAdd: function (map: L.Map) {
     const locationButton = document.createElement("button");
@@ -47,17 +36,15 @@ const GeolocationControl = L.Control.extend({
 
     locationButton.id = "ask-permission-control-button";
 
-    locationButton.textContent = this.options.title;
+    locationButton.textContent = "Konumuma Git";
 
     locationButton.classList.add("custom-map-control-button");
 
     locationButton.type = "button";
 
     L.DomEvent.on(locationButton, "click", () => {
-      if (this._watchingLocation && this._currentLocationMarker) {
+      if (this._currentLocationMarker) {
         map.setView(this._currentLocationMarker.getLatLng(), 12);
-      } else {
-        this.startWatching();
       }
     });
 

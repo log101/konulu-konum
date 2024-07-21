@@ -18,7 +18,7 @@ import {
 } from "./LockedContent/templates";
 
 // Geolocation utils
-import { calculateDistance, errorCallback } from "./LockedContent/geolocation";
+import { calculateDistance } from "./LockedContent/geolocation";
 import { incrementUnlockCounter } from "./LockedContent/serverUtils";
 
 // LockedContent is a custom element watching user location and blurring
@@ -44,35 +44,16 @@ export class LockedContent extends LitElement {
   @property({ noAccessor: true }) readonly imageURL?: string;
   @property({ type: Object, noAccessor: true })
   readonly targetPosition?: LatLngTuple;
+  @property({ type: Object })
+  currentPosition?: LatLngTuple;
 
   // Reactive states, template is rendered according to this states
-  @state()
-  protected _geolocationPermissionStatus: PermissionState = "prompt";
   @state()
   protected _unlocked = false;
   @state()
   protected _arrived = false;
   @state()
   protected _distanceText?: string;
-  @state()
-  protected _watchId?: number;
-
-  // This callback will be fired when geolocation info is available
-  successCallback(position: GeolocationPosition) {
-    // Set hasGeolocationPermission state true to change the template
-    this._geolocationPermissionStatus = "granted";
-
-    // Target position must be set
-    if (!this.targetPosition) return;
-
-    // Calculate the distance between target and current position in meters
-    const distance = calculateDistance(position, this.targetPosition);
-
-    // Update the text based on the distance
-    this._updateDistanceText(distance);
-
-    this._checkArrived(distance);
-  }
 
   private _updateDistanceText(distance: number) {
     // Update the proximity text according to the distance remaining
@@ -86,10 +67,6 @@ export class LockedContent extends LitElement {
   private _checkArrived(distance: number) {
     // If target is close less then 100 meters user has arrived to target location
     if (distance < 100) {
-      if (this._watchId) {
-        // Stop watching location
-        navigator.geolocation.clearWatch(this._watchId);
-      }
       // Update state to reveal the image
       this._arrived = true;
     }
@@ -98,11 +75,26 @@ export class LockedContent extends LitElement {
   // This template is shown when user hasn't give geolocation permission yet
   // When user click the button user is asked for geolocation permission
   private _permissionButtonTemplate = () =>
-    permissionButtonTemplate(this._startWatchingLocation);
+    permissionButtonTemplate(() => null);
 
   // This template is shown when user has given permission but has not arrived yet
-  private _lockedButtonTemplate = () =>
-    lockedButtonTemplate(this._distanceText);
+  private _lockedButtonTemplate = () => {
+    // Target position must be set
+    if (!this.targetPosition || !this.currentPosition) return;
+
+    // Calculate the distance between target and current position in meters
+    const distance = calculateDistance(
+      this.currentPosition,
+      this.targetPosition
+    );
+
+    // Update the text based on the distance
+    this._updateDistanceText(distance);
+
+    this._checkArrived(distance);
+
+    return lockedButtonTemplate(this._distanceText);
+  };
 
   // This template is shown when user has arrived to the target location
   // When user click the button counter at the bottom of the page is incremented
@@ -113,46 +105,8 @@ export class LockedContent extends LitElement {
       this._unlocked = true;
     });
 
-  // Start watching user location, if user has not given permission yet
-  // this will ask the user for permission and update the watch id
-  private _startWatchingLocation() {
-    // User is already being watched no need to
-    // watch position
-    if (this._watchId) return;
-
-    const id = navigator.geolocation.watchPosition(
-      this.successCallback.bind(this),
-      (err) => {
-        if (err.code == GeolocationPositionError.PERMISSION_DENIED) {
-          this._geolocationPermissionStatus = "denied";
-        }
-        errorCallback(err);
-      },
-      this.geolocationOptions
-    );
-
-    this._watchId = id;
-  }
-
   connectedCallback(): void {
     super.connectedCallback();
-
-    // Check geolocation permission, if user has given permission before
-    // start watching user location
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((permissionStatus) => {
-        switch (permissionStatus.state) {
-          case "granted":
-            this._startWatchingLocation();
-            break;
-          case "denied":
-            this._geolocationPermissionStatus = "denied";
-          case "prompt":
-          default:
-            break;
-        }
-      });
   }
 
   render() {
@@ -165,9 +119,9 @@ export class LockedContent extends LitElement {
     // 4 - User did not give geolocation permission
     if (this._arrived) {
       buttonTemplate = this._unlockedButtonTemplate;
-    } else if (this._geolocationPermissionStatus == "granted") {
+    } else if (this.currentPosition) {
       buttonTemplate = this._lockedButtonTemplate;
-    } else if (this._geolocationPermissionStatus == "prompt") {
+    } else if (!this.currentPosition) {
       buttonTemplate = this._permissionButtonTemplate;
     } else {
       buttonTemplate = permissionDeniedButtonTemplate;

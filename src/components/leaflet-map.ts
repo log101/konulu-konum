@@ -1,5 +1,11 @@
 // Lit
-import { html, LitElement, unsafeCSS, type CSSResultGroup } from "lit";
+import {
+  html,
+  LitElement,
+  unsafeCSS,
+  type CSSResultGroup,
+  type PropertyValues,
+} from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 // Leaflet
@@ -12,7 +18,6 @@ import { GeolocationControl, GoToTargetControl } from "./LeafletMap/controls";
 import leafletStyles from "leaflet/dist/leaflet.css?inline";
 import globalStyles from "@/styles/globals.css?inline";
 import mapStyles from "@/styles/locked-page.css?inline";
-import { onLocationError, onLocationSuccess } from "./LeafletMap/geolocation";
 
 @customElement("leaflet-map")
 export class LeafletMap extends LitElement {
@@ -34,26 +39,18 @@ export class LeafletMap extends LitElement {
   _askPermissionButton!: HTMLButtonElement;
 
   // Properties and states
-  @property({ type: Object }) targetLocation?: LatLngTuple;
+  @property({ type: Object, noAccessor: true }) targetLocation?: LatLngTuple;
+  @property({ type: Object })
+  currentPosition?: LatLngTuple;
 
   @state()
   protected _map?: L.Map;
   @state()
-  protected _geolocationPermissionStatus: PermissionState = "prompt";
-  @state()
   protected _currentLocationMarker?: L.Marker;
-  @state()
-  protected _watchingLocation = false;
 
   firstUpdated(): void {
     if (!this._mapElement || !this.targetLocation) return;
     this._map = new Map(this._mapElement).setView(this.targetLocation, 13);
-
-    this._map.on("locationerror", onLocationError);
-
-    this._map.on("locationfound", (ev) =>
-      onLocationSuccess(ev, this._map!, this._currentLocationMarker)
-    );
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -81,38 +78,21 @@ export class LeafletMap extends LitElement {
     targetLocationControl.setTargetLocation(this.targetLocation);
     targetLocationControl.addTo(this._map);
 
-    // Check geolocation permission, if user has given permission before
-    // start watching user location
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((permissionStatus) => {
-        switch (permissionStatus.state) {
-          case "granted":
-            this._geolocationPermissionStatus = "granted";
-            const locateUserControl = new GeolocationControl({
-              // @ts-expect-error
-              title: "Konumuma Git",
-              position: "bottomleft",
-            });
-            locateUserControl.setCurrentLocationMarker(
-              this._currentLocationMarker
-            );
-            locateUserControl.addTo(this._map!);
-            break;
-          case "denied":
-            this._geolocationPermissionStatus = "denied";
-            break;
-          case "prompt":
-            const askPermissionControl = new GeolocationControl({
-              position: "bottomleft",
-            });
+    const currentLocationControl = new GeolocationControl({
+      position: "bottomleft",
+    });
 
-            askPermissionControl.addTo(this._map!);
-            break;
-          default:
-            break;
-        }
-      });
+    currentLocationControl.setCurrentLocationMarker(
+      this._currentLocationMarker
+    );
+    currentLocationControl.addTo(this._map);
+  }
+
+  protected update(changedProperties: PropertyValues): void {
+    super.update(changedProperties);
+    if (changedProperties.get("currentPosition")) {
+      this._currentLocationMarker?.setLatLng(this.currentPosition!);
+    }
   }
 
   render() {
