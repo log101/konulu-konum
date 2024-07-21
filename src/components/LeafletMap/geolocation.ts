@@ -38,7 +38,11 @@ function onLocationError(err: L.ErrorEvent) {
   }).showToast();
 }
 
-function onLocationSuccess(locationEvent: L.LocationEvent) {
+function onLocationSuccess(
+  locationEvent: L.LocationEvent,
+  map: L.Map,
+  currentLocationMarker: L.Marker | undefined
+) {
   const position = locationEvent.latlng;
 
   const currentPos = {
@@ -46,13 +50,13 @@ function onLocationSuccess(locationEvent: L.LocationEvent) {
     lng: position.lng,
   };
 
-  if (this._currentLocationMarker) {
-    this._currentLocationMarker.setLatLng(currentPos);
+  if (currentLocationMarker) {
+    currentLocationMarker.setLatLng(currentPos);
   } else {
-    this._currentLocationMarker = L.marker(currentPos, {
+    currentLocationMarker = L.marker(currentPos, {
       icon: currentLocationIcon,
     });
-    this._currentLocationMarker.addTo(this._map);
+    currentLocationMarker.addTo(map);
   }
 }
 

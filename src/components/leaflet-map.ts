@@ -6,7 +6,7 @@ import { customElement, property, query, state } from "lit/decorators.js";
 import L, { Map } from "leaflet";
 import type { LatLngTuple } from "leaflet";
 import { targetLocationIcon } from "./LeafletMap/icons";
-import { AskPermissonControl, GoToTargetControl } from "./LeafletMap/controls";
+import { GeolocationControl, GoToTargetControl } from "./LeafletMap/controls";
 
 // Styles
 import leafletStyles from "leaflet/dist/leaflet.css?inline";
@@ -45,17 +45,15 @@ export class LeafletMap extends LitElement {
   @state()
   protected _watchingLocation = false;
 
-  private _startWatchingLocation = () => {
-    this._map?.locate();
-  };
-
   firstUpdated(): void {
     if (!this._mapElement || !this.targetLocation) return;
     this._map = new Map(this._mapElement).setView(this.targetLocation, 13);
 
     this._map.on("locationerror", onLocationError);
 
-    this._map.on("locationfound", onLocationSuccess.bind(this));
+    this._map.on("locationfound", (ev) =>
+      onLocationSuccess(ev, this._map!, this._currentLocationMarker)
+    );
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -80,12 +78,8 @@ export class LeafletMap extends LitElement {
       position: "bottomleft",
     });
 
+    targetLocationControl.setTargetLocation(this.targetLocation);
     targetLocationControl.addTo(this._map);
-
-    L.DomEvent.on(this._goToTargetButton, "click", () => {
-      if (!this.targetLocation || !this._map) return;
-      this._map.setView(this.targetLocation, 18);
-    });
 
     // Check geolocation permission, if user has given permission before
     // start watching user location
@@ -95,24 +89,25 @@ export class LeafletMap extends LitElement {
         switch (permissionStatus.state) {
           case "granted":
             this._geolocationPermissionStatus = "granted";
+            const locateUserControl = new GeolocationControl({
+              // @ts-expect-error
+              title: "Konumuma Git",
+              position: "bottomleft",
+            });
+            locateUserControl.setCurrentLocationMarker(
+              this._currentLocationMarker
+            );
+            locateUserControl.addTo(this._map!);
             break;
           case "denied":
             this._geolocationPermissionStatus = "denied";
             break;
           case "prompt":
-            if (!this._map) break;
-            const askPermissionControl = new AskPermissonControl({
+            const askPermissionControl = new GeolocationControl({
               position: "bottomleft",
             });
-            askPermissionControl.onRemove = () => {
-              L.DomEvent.off(this._askPermissionButton);
-            };
-            askPermissionControl.addTo(this._map);
-            L.DomEvent.on(
-              this._askPermissionButton,
-              "click",
-              this._startWatchingLocation
-            );
+
+            askPermissionControl.addTo(this._map!);
             break;
           default:
             break;
