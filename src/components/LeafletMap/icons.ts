@@ -1,11 +1,11 @@
-import { icon } from "leaflet";
+import L from "leaflet";
 
-var targetLocationIcon = icon({
+var targetLocationIcon = L.icon({
   iconUrl: "goal.svg",
   iconSize: [32, 32],
 });
 
-var currentLocationIcon = icon({
+var currentLocationIcon = L.icon({
   iconUrl: "blue-dot.png",
   iconSize: [32, 32],
 });

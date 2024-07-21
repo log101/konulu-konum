@@ -1,19 +1,33 @@
 import L from "leaflet";
 
-const TargetLocationControl = L.Control.extend({
-  onAdd: function (map: L.Map, targetLocation: L.LatLngTuple) {
+const GoToTargetControl = L.Control.extend({
+  onAdd: function () {
     const locationButton = document.createElement("button");
+
+    locationButton.id = "go-to-target-control-button";
 
     locationButton.textContent = "Hedefe Git";
 
     locationButton.classList.add("custom-map-control-button");
 
-    locationButton.addEventListener("click", () => {
-      map.setView(targetLocation, 18);
-    });
+    return locationButton;
+  },
+});
+
+const AskPermissonControl = L.Control.extend({
+  onAdd: function () {
+    const locationButton = document.createElement("button");
+
+    locationButton.id = "ask-permission-control-button";
+
+    locationButton.textContent = "Konum İzni Ver";
+
+    locationButton.classList.add("custom-map-control-button");
+
+    locationButton.type = "button";
 
     return locationButton;
   },
 });
 
-export { TargetLocationControl };
+export { GoToTargetControl, AskPermissonControl };
