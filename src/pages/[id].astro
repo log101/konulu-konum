@@ -70,8 +70,12 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       imageURL={`http://localhost:3000/images/${data?.blob_url}`}
       targetPosition={data?.loc}></locked-content>
 
-    <leaflet-map id="leaflet-map-component" targetPosition={data?.loc}
-    ></leaflet-map>
+    <div
+      id="map"
+      class="w-full h-[450px] rounded"
+      data-target-location={data?.loc}
+    >
+    </div>
 
     <ShareButton client:only />
     <div class="flex justify-center">
@@ -81,6 +85,10 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     </div>
   </main>
   <script>
+    import { errorCallback } from "@/components/LockedContent/geolocation";
+    import { onLocationSuccess } from "@/scripts/initMap";
+    let watchId: number;
+
     function updateCurrentLocation(position: GeolocationPosition) {
       const lockedContent = document.getElementById("locked-content-component");
       if (lockedContent) {
@@ -90,13 +98,7 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
         );
       }
 
-      const leafletMap = document.getElementById("leaflet-map-component");
-      if (leafletMap) {
-        leafletMap.setAttribute(
-          "currentPosition",
-          `[${position.coords.latitude}, ${position.coords.longitude}]`
-        );
-      }
+      onLocationSuccess(position);
     }
 
     navigator.permissions
@@ -104,7 +106,10 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       .then((permissionStatus) => {
         switch (permissionStatus.state) {
           case "granted":
-            window.navigator.geolocation.watchPosition(updateCurrentLocation);
+            watchId = window.navigator.geolocation.watchPosition(
+              updateCurrentLocation,
+              errorCallback
+            );
             break;
           case "denied":
           case "prompt":
@@ -114,9 +119,14 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       });
 
     window.addEventListener("askpermission", () => {
-      console.log("ask permission");
+      if (!watchId) {
+        watchId = window.navigator.geolocation.watchPosition(
+          updateCurrentLocation,
+          errorCallback
+        );
+      }
     });
   </script>
   <script src="../components/locked-content.ts"></script>
-  <script src="../components/leaflet-map.ts"></script>
+  <script src="../scripts/initMap.ts"></script>
 </Layout>

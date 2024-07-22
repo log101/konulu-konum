@@ -32,20 +32,12 @@ export class LeafletMap extends LitElement {
   @query("#mapid")
   _mapElement!: HTMLDivElement;
 
-  @query("#go-to-target-control-button")
-  _goToTargetButton!: HTMLButtonElement;
-
-  @query("#ask-permission-control-button")
-  _askPermissionButton!: HTMLButtonElement;
-
   // Properties and states
   @property({ type: Object, noAccessor: true }) targetPosition?: LatLngTuple;
   @property({ type: Object })
   currentPosition?: LatLngTuple;
 
-  @state()
   protected _map?: L.Map;
-  @state()
   protected _currentLocationMarker?: L.Marker;
 
   firstUpdated(): void {

@@ -39,7 +39,7 @@ export class LockedContent extends LitElement {
   ];
 
   // Components properties/attributes, no accessor attribute disables detecting
-  // changes as these are readonly attriubtes there is no need to attach setters
+  // changes as these are readonly attributes there is no need to attach setters
   @property({ noAccessor: true }) readonly imageId?: string;
   @property({ noAccessor: true }) readonly imageURL?: string;
   @property({ type: Object, noAccessor: true })
@@ -73,7 +73,7 @@ export class LockedContent extends LitElement {
   }
 
   private _dispatchAskPermissionEvent() {
-    const event = new Event("askpermission");
+    const event = new Event("askpermission", { bubbles: true, composed: true });
     this.dispatchEvent(event);
   }
 
