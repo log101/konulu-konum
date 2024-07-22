@@ -11,7 +11,7 @@ import { customElement, property, query, state } from "lit/decorators.js";
 // Leaflet
 import L, { Map } from "leaflet";
 import type { LatLngTuple } from "leaflet";
-import { targetLocationIcon } from "./LeafletMap/icons";
+import { currentLocationIcon, targetLocationIcon } from "./LeafletMap/icons";
 import { GeolocationControl, GoToTargetControl } from "./LeafletMap/controls";
 
 // Styles
@@ -39,7 +39,7 @@ export class LeafletMap extends LitElement {
   _askPermissionButton!: HTMLButtonElement;
 
   // Properties and states
-  @property({ type: Object, noAccessor: true }) targetLocation?: LatLngTuple;
+  @property({ type: Object, noAccessor: true }) targetPosition?: LatLngTuple;
   @property({ type: Object })
   currentPosition?: LatLngTuple;
 
@@ -49,8 +49,8 @@ export class LeafletMap extends LitElement {
   protected _currentLocationMarker?: L.Marker;
 
   firstUpdated(): void {
-    if (!this._mapElement || !this.targetLocation) return;
-    this._map = new Map(this._mapElement).setView(this.targetLocation, 13);
+    if (!this._mapElement || !this.targetPosition) return;
+    this._map = new Map(this._mapElement).setView(this.targetPosition, 13);
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -59,11 +59,11 @@ export class LeafletMap extends LitElement {
     }).addTo(this._map);
 
     // Add target location icon marker
-    L.marker(this.targetLocation, { icon: targetLocationIcon }).addTo(
+    L.marker(this.targetPosition, { icon: targetLocationIcon }).addTo(
       this._map
     );
 
-    L.circle(this.targetLocation, {
+    L.circle(this.targetPosition, {
       color: "blue",
       fillColor: "#30f",
       fillOpacity: 0.2,
@@ -75,23 +75,30 @@ export class LeafletMap extends LitElement {
       position: "bottomleft",
     });
 
-    targetLocationControl.setTargetLocation(this.targetLocation);
+    targetLocationControl.setTargetLocation(this.targetPosition);
     targetLocationControl.addTo(this._map);
-
-    const currentLocationControl = new GeolocationControl({
-      position: "bottomleft",
-    });
-
-    currentLocationControl.setCurrentLocationMarker(
-      this._currentLocationMarker
-    );
-    currentLocationControl.addTo(this._map);
   }
 
   protected update(changedProperties: PropertyValues): void {
     super.update(changedProperties);
     if (changedProperties.get("currentPosition")) {
-      this._currentLocationMarker?.setLatLng(this.currentPosition!);
+      if (!this._currentLocationMarker && this._map) {
+        this._currentLocationMarker = L.marker(this.currentPosition!, {
+          icon: currentLocationIcon,
+        });
+        this._currentLocationMarker.addTo(this._map);
+
+        const geolocationControl = new GeolocationControl({
+          position: "bottomleft",
+        });
+
+        geolocationControl.setCurrentLocationMarker(
+          this._currentLocationMarker
+        );
+        geolocationControl.addTo(this._map);
+      } else if (this._currentLocationMarker) {
+        this._currentLocationMarker.setLatLng(this.currentPosition!);
+      }
     }
   }
 

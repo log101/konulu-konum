@@ -65,11 +65,13 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     </Card>
 
     <locked-content
+      id="locked-content-component"
       imageId={data?.url}
       imageURL={`http://localhost:3000/images/${data?.blob_url}`}
       targetPosition={data?.loc}></locked-content>
 
-    <leaflet-map targetLocation={data?.loc}></leaflet-map>
+    <leaflet-map id="leaflet-map-component" targetPosition={data?.loc}
+    ></leaflet-map>
 
     <ShareButton client:only />
     <div class="flex justify-center">
@@ -78,7 +80,43 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </p>
     </div>
   </main>
-  <!-- <script src="../scripts/initMap.ts"></script> -->
+  <script>
+    function updateCurrentLocation(position: GeolocationPosition) {
+      const lockedContent = document.getElementById("locked-content-component");
+      if (lockedContent) {
+        lockedContent.setAttribute(
+          "currentPosition",
+          `[${position.coords.latitude}, ${position.coords.longitude}]`
+        );
+      }
+
+      const leafletMap = document.getElementById("leaflet-map-component");
+      if (leafletMap) {
+        leafletMap.setAttribute(
+          "currentPosition",
+          `[${position.coords.latitude}, ${position.coords.longitude}]`
+        );
+      }
+    }
+
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        switch (permissionStatus.state) {
+          case "granted":
+            window.navigator.geolocation.watchPosition(updateCurrentLocation);
+            break;
+          case "denied":
+          case "prompt":
+          default:
+            break;
+        }
+      });
+
+    window.addEventListener("askpermission", () => {
+      console.log("ask permission");
+    });
+  </script>
   <script src="../components/locked-content.ts"></script>
   <script src="../components/leaflet-map.ts"></script>
 </Layout>

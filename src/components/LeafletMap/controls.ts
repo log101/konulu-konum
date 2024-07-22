@@ -43,6 +43,7 @@ const GeolocationControl = L.Control.extend({
     locationButton.type = "button";
 
     L.DomEvent.on(locationButton, "click", () => {
+      console.log(this._currentLocationMarker);
       if (this._currentLocationMarker) {
         map.setView(this._currentLocationMarker.getLatLng(), 12);
       }

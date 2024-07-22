@@ -72,10 +72,15 @@ export class LockedContent extends LitElement {
     }
   }
 
+  private _dispatchAskPermissionEvent() {
+    const event = new Event("askpermission");
+    this.dispatchEvent(event);
+  }
+
   // This template is shown when user hasn't give geolocation permission yet
   // When user click the button user is asked for geolocation permission
   private _permissionButtonTemplate = () =>
-    permissionButtonTemplate(() => null);
+    permissionButtonTemplate(this._dispatchAskPermissionEvent);
 
   // This template is shown when user has given permission but has not arrived yet
   private _lockedButtonTemplate = () => {
@@ -113,8 +118,8 @@ export class LockedContent extends LitElement {
     let buttonTemplate;
 
     // Determine which template to show, there are 3 states:
-    // 1 - No geolocation permission given
-    // 2 - Permission given but has no arrived to target position yet
+    // 1 - No current location provided
+    // 2 - Current location given but has no arrived to target position yet
     // 3 - Arrived to target position
     // 4 - User did not give geolocation permission
     if (this._arrived) {
