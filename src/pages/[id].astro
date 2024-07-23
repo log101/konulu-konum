@@ -40,14 +40,13 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
 ---
 
 <Layout>
-  <main class="flex flex-col gap-4">
+  <main class='flex flex-col gap-4'>
     <div>
       <h1
-        class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline"
-      >
+        class='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline'>
         <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
       </h1>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
+      <p class='leading-7 [&:not(:first-child)]:mt-6'>
         Arkadaşınız size bir fotoğraf ve bir not bıraktı. Fakat fotoğrafı
         görebilmeniz için aşağıdaki konuma gitmeniz gerekiyor. Konuma
         yaklaştığınızda butona basıp fotoğrafı görüntüleyebilirsiniz.
@@ -56,55 +55,74 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
 
     <Separator />
 
-    <Card className="w-full">
+    <Card className='w-full'>
       <CardHeader>
         <CardTitle>{data?.author}</CardTitle>
       </CardHeader>
       <CardContent>
         <p>{data?.description}</p>
       </CardContent>
-      <CardFooter className="gap-2">
+      <CardFooter className='gap-2'>
         <CalendarIcon />
         <p>{dateFromNow}</p>
       </CardFooter>
     </Card>
 
     <locked-content
-      id="locked-content-component"
+      id='locked-content-component'
       imageId={data?.url}
       imageURL={`http://localhost:3000/images/${data?.blob_url}`}
       targetPosition={data?.loc}></locked-content>
 
     <div
-      id="locked-content-container"
+      id='locked-content-container'
       data-target-position={data?.loc}
-      class="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded"
-    >
-      <div class="flex flex-col justify-center items-center image-wrapper">
+      class='w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded'>
+      <div class='flex flex-col justify-center items-center image-wrapper'>
         <img
-          id="content"
+          id='content'
           src={`http://localhost:3000/images/${data?.blob_url}`}
-          class="h-[450px] blur-2xl"
+          class='h-[450px] blur-2xl'
         />
-        <div class="flex flex-col justify-center gap-4 overlay">
+        <div class='flex flex-col justify-center gap-4 overlay'>
           <button
-            id="unlock-content-button"
-            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-          >
-            İçerik Kilitli
+            id='unlock-content-button'
+            class='inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md'>
+            <svg
+              id='lock-icon'
+              xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              fill='#ffffff'
+              viewBox='0 0 256 256'>
+              <path
+                d='M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z'
+              ></path>
+            </svg>
+            <svg
+              id='unlock-icon'
+              class='hidden'
+              xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              fill='#ffffff'
+              viewBox='0 0 256 256'>
+              <path
+                d='M208,80H96V56a32,32,0,0,1,32-32c15.37,0,29.2,11,32.16,25.59a8,8,0,0,0,15.68-3.18C171.32,24.15,151.2,8,128,8A48.05,48.05,0,0,0,80,56V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm0,128H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z'
+              ></path>
+            </svg>
+            <p id='button-text'>İçerik Kilitli</p>
           </button>
           <div
-            class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
-          >
-            <div class="pb-0 text-center flex flex-col gap-4">
-              <p id="locked-content-description">
+            class='rounded-lg border bg-card text-card-foreground shadow-sm p-2'>
+            <div class='pb-0 text-center flex flex-col gap-4'>
+              <p id='locked-content-description'>
                 Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
               </p>
               <button
-                id="location-permission-button"
-                _="on click send askpermission to me"
-                class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md"
-              >
+                id='location-permission-button'
+                _='on click send askpermission to me'
+                class='inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md'>
                 Konum İzni Ver
               </button>
             </div>
@@ -114,20 +132,19 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
     </div>
 
     <div
-      id="map"
-      class="w-full h-[450px] rounded"
-      data-target-location={data?.loc}
-    >
+      id='map'
+      class='w-full h-[450px] rounded'
+      data-target-location={data?.loc}>
     </div>
 
     <ShareButton client:only />
-    <div class="flex justify-center">
-      <p class="text-muted-foreground">
+    <div class='flex justify-center'>
+      <p class='text-muted-foreground'>
         Fotoğrafın kilidi şu ana dek <b>{data?.unlocked_counter}</b> kez açıldı
       </p>
     </div>
   </main>
-  <script src="../components/locked-content.ts"></script>
-  <script src="../scripts/initMap.ts"></script>
-  <script src="../scripts/lockedContent.ts"></script>
+  <script src='../components/locked-content.ts'></script>
+  <script src='../scripts/initMap.ts'></script>
+  <script src='../scripts/lockedContent.ts'></script>
 </Layout>
