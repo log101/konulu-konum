@@ -1,7 +1,10 @@
 ---
+// Styles
 import "@/styles/globals.css";
 import "../styles/locked-page.css";
+import "../styles/locked-content.css";
 
+// Components
 import Layout from "../layouts/Layout.astro";
 import ShareButton from "../components/ShareButton";
 import {
@@ -14,6 +17,8 @@ import {
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
 import type { ContentTable } from "@/lib/db";
+
+// Dayjs
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
@@ -71,6 +76,44 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       targetPosition={data?.loc}></locked-content>
 
     <div
+      id="locked-content-container"
+      data-target-position={data?.loc}
+      class="w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded"
+    >
+      <div class="flex flex-col justify-center items-center image-wrapper">
+        <img
+          id="content"
+          src={`http://localhost:3000/images/${data?.blob_url}`}
+          class="h-[450px] blur-2xl"
+        />
+        <div class="flex flex-col justify-center gap-4 overlay">
+          <button
+            id="unlock-content-button"
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
+          >
+            İçerik Kilitli
+          </button>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm p-2"
+          >
+            <div class="pb-0 text-center flex flex-col gap-4">
+              <p id="locked-content-description">
+                Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
+              </p>
+              <button
+                id="location-permission-button"
+                _="on click send askpermission to me"
+                class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md"
+              >
+                Konum İzni Ver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
       id="map"
       class="w-full h-[450px] rounded"
       data-target-location={data?.loc}
@@ -84,49 +127,7 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </p>
     </div>
   </main>
-  <script>
-    import { errorCallback } from "@/components/LockedContent/geolocation";
-    import { onLocationSuccess } from "@/scripts/initMap";
-    let watchId: number;
-
-    function updateCurrentLocation(position: GeolocationPosition) {
-      const lockedContent = document.getElementById("locked-content-component");
-      if (lockedContent) {
-        lockedContent.setAttribute(
-          "currentPosition",
-          `[${position.coords.latitude}, ${position.coords.longitude}]`
-        );
-      }
-
-      onLocationSuccess(position);
-    }
-
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((permissionStatus) => {
-        switch (permissionStatus.state) {
-          case "granted":
-            watchId = window.navigator.geolocation.watchPosition(
-              updateCurrentLocation,
-              errorCallback
-            );
-            break;
-          case "denied":
-          case "prompt":
-          default:
-            break;
-        }
-      });
-
-    window.addEventListener("askpermission", () => {
-      if (!watchId) {
-        watchId = window.navigator.geolocation.watchPosition(
-          updateCurrentLocation,
-          errorCallback
-        );
-      }
-    });
-  </script>
   <script src="../components/locked-content.ts"></script>
   <script src="../scripts/initMap.ts"></script>
+  <script src="../scripts/lockedContent.ts"></script>
 </Layout>
