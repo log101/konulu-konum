@@ -45,24 +45,35 @@ function updateCurrentLocation(position: GeolocationPosition) {
       const unlockIcon = document.getElementById("unlock-icon");
       const lockIcon = document.getElementById("lock-icon");
       const buttonText = document.getElementById("button-text");
+      const description = document.getElementById("locked-content-description");
 
       if (unlockButton) {
         if (buttonText) buttonText.innerText = "İçeriği Göster";
         if (lockIcon) lockIcon.classList.add("hidden");
         if (unlockIcon) unlockIcon.classList.remove("hidden");
+        if (description)
+          description.innerText = "İçeriği görmek için butona bas!";
         unlockButton.classList.remove("bg-primary", "hover:bg-primary/90");
         unlockButton.classList.add(
-          "transition-[background-color]",
-          "duration-1000"
-        );
-        unlockButton.classList.add(
-          "animate-pulse",
           "bg-indigo-600",
           "hover:bg-indigo-700",
           "hover:animate-none",
           "border-2",
           "border-indigo-800"
         );
+        setTimeout(() => {
+          unlockButton.classList.remove("duration-1000");
+          unlockButton.classList.add("animate-pulse");
+        }, 800);
+
+        unlockButton.addEventListener("click", () => {
+          const image = document.getElementById("content");
+          const unlockButtonContainer = document.getElementById(
+            "unlock-button-container"
+          );
+          if (image) image.classList.remove("blur-2xl");
+          if (unlockButtonContainer) unlockButtonContainer.remove();
+        });
       }
     } else {
       const distanceText = generateDistanceText(distance);

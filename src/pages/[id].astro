@@ -82,12 +82,14 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
         <img
           id='content'
           src={`http://localhost:3000/images/${data?.blob_url}`}
-          class='h-[450px] blur-2xl'
+          class='h-[450px] blur-2xl transition-all duration-1000'
         />
-        <div class='flex flex-col justify-center gap-4 overlay'>
+        <div
+          id='unlock-button-container'
+          class='flex flex-col justify-center gap-4 overlay'>
           <button
             id='unlock-content-button'
-            class='inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md'>
+            class='transition-[background-color] duration-1000 inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md'>
             <svg
               id='lock-icon'
               xmlns='http://www.w3.org/2000/svg'

@@ -8,8 +8,7 @@ function permissionButtonTemplate(onClickHandler: () => void) {
     <div class="flex flex-col justify-center gap-4 overlay">
       <button
         id="unlock-content-button"
-        class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-      >
+        class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md">
         İçerik Kilitli
       </button>
       <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-2">
@@ -19,8 +18,7 @@ function permissionButtonTemplate(onClickHandler: () => void) {
           </p>
           <button
             @click="${onClickHandler}"
-            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md"
-          >
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md">
             Konum İzni Ver
           </button>
         </div>
@@ -34,8 +32,7 @@ function permissionDeniedButtonTemplate() {
   return html`<div class="flex flex-col justify-center gap-4 overlay">
     <button
       id="unlock-content-button"
-      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-    >
+      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md">
       ${lockSVG}
       <p>İçerik Kilitli</p>
     </button>
@@ -55,8 +52,7 @@ function lockedButtonTemplate(proximityText: string | undefined) {
   return html`<div class="flex flex-col justify-center gap-4 overlay">
     <button
       id="unlock-content-button"
-      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md"
-    >
+      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md text-lg p-6 text-md">
       ${lockSVG}
       <p>İçerik Kilitli</p>
     </button>
@@ -78,8 +74,7 @@ function unlockedButtonTemplate(onClickHandler: () => void) {
     <button
       @click="${onClickHandler}"
       id="unlock-content-button"
-      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800"
-    >
+      class="inline-flex gap-2 items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-11 rounded-md text-lg p-6 animate-pulse bg-indigo-600 hover:bg-indigo-700 hover:animate-none border-2 border-indigo-800 transition-1000">
       ${unlockSVG}
       <p>İçeriğin Kilidi Açıldı</p>
     </button>
