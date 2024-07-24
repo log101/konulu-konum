@@ -1,4 +1,5 @@
 import L from "leaflet";
+import Toastify from "toastify-js";
 
 type TargetLocation = [lat: number, lng: number] | null;
 
@@ -59,6 +60,20 @@ const CurrentLocation = L.Control.extend({
     locationButton.addEventListener("click", () => {
       if (currentLocationMarker) {
         map.setView(currentLocationMarker.getLatLng(), 12);
+      } else {
+        Toastify({
+          text: "Konumunuza erişilemiyor, lütfen biraz bekleyip tekrar deneyin.",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          stopOnFocus: true,
+          style: {
+            background: "black",
+            borderRadius: "6px",
+            margin: "16px",
+          },
+          onClick: function () {},
+        }).showToast();
       }
     });
 

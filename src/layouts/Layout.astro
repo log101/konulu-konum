@@ -1,50 +1,48 @@
 <!doctype html>
-<html lang="en">
+<html lang='en'>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/jpg" href="/konulu-konum-logo.jpg" />
+    <meta charset='UTF-8' />
+    <meta name='description' content='Astro description' />
+    <meta name='viewport' content='width=device-width' />
+    <link rel='icon' type='image/jpg' href='/konulu-konum-logo.jpg' />
     <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
+      rel='stylesheet'
+      href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      integrity='sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='
+      crossorigin=''
     />
     <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+      rel='stylesheet'
+      type='text/css'
+      href='https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css'
     />
     <script
       is:inline
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""></script>
+      src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+      integrity='sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo='
+      crossorigin=''></script>
     <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <meta property="og:title" content="Konulu Konum" />
-    <meta property="og:description" content="Sevdiklerinizi şaşırtın!" />
-    <meta property="og:url" content="https://konulu-konum.vercel.app" />
+      type='text/javascript'
+      src='https://cdn.jsdelivr.net/npm/toastify-js'></script>
+    <meta property='og:title' content='Konulu Konum' />
+    <meta property='og:description' content='Sevdiklerinizi şaşırtın!' />
+    <meta property='og:url' content='https://konulu-konum.vercel.app' />
     <meta
-      property="og:image"
-      content="https://konulu-konum.vercel.app/konulu-konum-logo.jpg"
+      property='og:image'
+      content='https://konulu-konum.vercel.app/konulu-konum-logo.jpg'
     />
-    <meta name="twitter:card" content="summary" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name='twitter:card' content='summary' />
+    <meta name='generator' content={Astro.generator} />
     <title>Konulu Konum</title>
   </head>
-  <body class="container my-8">
+  <body class='container my-8'>
     <slot />
   </body>
 
   <script>
     import htmx from "htmx.org";
-    import _hyperscript from "hyperscript.org";
 
     window.htmx = htmx;
-    _hyperscript.browserInit();
   </script>
 </html>
 <style is:global></style>

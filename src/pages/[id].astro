@@ -68,12 +68,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </CardFooter>
     </Card>
 
-    <locked-content
-      id='locked-content-component'
-      imageId={data?.url}
-      imageURL={`http://localhost:3000/images/${data?.blob_url}`}
-      targetPosition={data?.loc}></locked-content>
-
     <div
       id='locked-content-container'
       data-target-position={data?.loc}
@@ -123,7 +117,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
               </p>
               <button
                 id='location-permission-button'
-                _='on click send askpermission to me'
                 class='inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md'>
                 Konum İzni Ver
               </button>
@@ -146,7 +139,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
       </p>
     </div>
   </main>
-  <script src='../components/locked-content.ts'></script>
   <script src='../scripts/initMap.ts'></script>
   <script src='../scripts/lockedContent.ts'></script>
 </Layout>

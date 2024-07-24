@@ -2,6 +2,7 @@ import {
   calculateDistance,
   errorCallback,
 } from "@/components/LockedContent/geolocation";
+import { incrementUnlockCounter } from "@/components/LockedContent/serverUtils";
 import { onLocationSuccess } from "@/scripts/initMap";
 let watchId: number;
 
@@ -17,6 +18,9 @@ const descriptionElement = document.getElementById(
 const locationPermissionButton = document.getElementById(
   "location-permission-button"
 );
+
+if (locationPermissionButton)
+  locationPermissionButton.addEventListener("click", startWatchingLocation);
 
 // Generates a human readable destination text according to
 // distance remaining
@@ -38,6 +42,7 @@ function updateCurrentLocation(position: GeolocationPosition) {
       [newPosition.latitude, newPosition.longitude],
       JSON.parse(targetLocation)
     );
+
     if (distance < 100) {
       // If user has arrived to destination
       // Transform locked button to reveal button
@@ -46,7 +51,6 @@ function updateCurrentLocation(position: GeolocationPosition) {
       const lockIcon = document.getElementById("lock-icon");
       const buttonText = document.getElementById("button-text");
       const description = document.getElementById("locked-content-description");
-
       if (unlockButton) {
         if (buttonText) buttonText.innerText = "İçeriği Göster";
         if (lockIcon) lockIcon.classList.add("hidden");
@@ -71,6 +75,7 @@ function updateCurrentLocation(position: GeolocationPosition) {
           const unlockButtonContainer = document.getElementById(
             "unlock-button-container"
           );
+          incrementUnlockCounter(document.URL.slice(-12));
           if (image) image.classList.remove("blur-2xl");
           if (unlockButtonContainer) unlockButtonContainer.remove();
         });
@@ -82,7 +87,9 @@ function updateCurrentLocation(position: GeolocationPosition) {
         descriptionElement.innerText = `Kalan mesafe: ${distanceText}`;
     }
 
-    if (locationPermissionButton) locationPermissionButton.remove();
+    if (locationPermissionButton) {
+      locationPermissionButton.remove();
+    }
   }
 
   // Update leaflet controls
