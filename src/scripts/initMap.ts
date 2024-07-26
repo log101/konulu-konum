@@ -33,7 +33,7 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 let currentLocationMarker: L.Marker;
 
-export function onLocationSuccess(position: GeolocationPosition) {
+export function mapLocationSuccessCallback(position: GeolocationPosition) {
   const currentPos = {
     lat: position.coords.latitude,
     lng: position.coords.longitude,
