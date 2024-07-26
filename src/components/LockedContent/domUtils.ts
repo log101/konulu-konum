@@ -30,6 +30,12 @@ function removeElement(elemId: string) {
   else console.error("Element could not be found!");
 }
 
+function addAttribute(elemId: string, attribute: string, value: string) {
+  const elem = document.getElementById(elemId);
+  if (elem) elem.setAttribute(attribute, value);
+  else console.error("Element could not be found!");
+}
+
 function revealContent() {
   incrementUnlockCounter(document.URL.slice(-12));
   removeClasses("content", "blur-2xl");
@@ -43,4 +49,5 @@ export {
   toggleClass,
   updateText,
   revealContent,
+  addAttribute,
 };

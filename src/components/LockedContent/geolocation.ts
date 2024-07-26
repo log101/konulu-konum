@@ -1,6 +1,7 @@
 import Toastify from "toastify-js";
 import L, { type LatLngTuple } from "leaflet";
 import {
+  addAttribute,
   addClasses,
   removeClasses,
   removeElement,
@@ -72,6 +73,13 @@ function errorCallback(err: GeolocationPositionError) {
     case GeolocationPositionError.PERMISSION_DENIED:
       errorMessage =
         "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.";
+      updateText(
+        "locked-content-description",
+        "Konum izleme izni alınamadı. \nİçeriği görüntüleyebilmek için konum bilginiz gerekiyor."
+      );
+      addAttribute("current-location-control", "disabled", "true");
+      addClasses("current-location-control", "disabled-button");
+      removeElement("location-permission-button");
       break;
     case GeolocationPositionError.POSITION_UNAVAILABLE:
       errorMessage =

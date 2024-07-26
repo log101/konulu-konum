@@ -14,3 +14,12 @@
 .custom-map-control-button:hover {
   background: rgb(235, 235, 235);
 }
+
+.disabled-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled-button:hover {
+  background-color: #fff;
+}

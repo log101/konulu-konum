@@ -57,6 +57,8 @@ const CurrentLocation = L.Control.extend({
 
     locationButton.type = "button";
 
+    locationButton.id = "current-location-control";
+
     locationButton.addEventListener("click", () => {
       if (currentLocationMarker) {
         map.setView(currentLocationMarker.getLatLng(), 12);
@@ -90,7 +92,7 @@ const GoToTargetLocation = L.Control.extend({
     locationButton.classList.add("custom-map-control-button");
 
     locationButton.addEventListener("click", () => {
-      if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 18);
+      if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 12);
     });
 
     return locationButton;
