@@ -16,6 +16,7 @@ function locationSuccessCallback(
   position: GeolocationPosition,
   targetPosition: LatLngTuple
 ) {
+  // Enable current location control
   removeClasses("current-location-control", "disabled-button")
   const newPosition = position.coords
 

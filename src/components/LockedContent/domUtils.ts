@@ -6,6 +6,12 @@ function updateText(elemId: string, text: string) {
   else console.error("Element could not be found!")
 }
 
+function updateInputValue(elemId: string, value: string) {
+  const elem = document.getElementById(elemId) as HTMLInputElement
+  if (elem) elem.value = value
+  else console.error("Element could not be found!")
+}
+
 function toggleClass(elemId: string, className: string) {
   const elem = document.getElementById(elemId)
   if (elem) elem.classList.toggle(className)
@@ -48,6 +54,7 @@ export {
   removeElement,
   toggleClass,
   updateText,
+  updateInputValue,
   revealContent,
   addAttribute,
 }
