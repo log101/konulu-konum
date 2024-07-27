@@ -1,42 +1,41 @@
 ---
 // Styles
-import "@/styles/globals.css";
-import "../styles/locked-page.css";
-import "../styles/locked-content.css";
+import "@/styles/globals.css"
+import "../styles/locked-page.css"
+import "../styles/locked-content.css"
 
 // Components
-import Layout from "../layouts/Layout.astro";
-import ShareButton from "../components/ShareButton";
+import Layout from "../layouts/Layout.astro"
+import ShareButton from "../components/ShareButton"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { Separator } from "@/components/ui/separator";
-import type { ContentTable } from "@/lib/db";
+} from "@/components/ui/card"
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { Separator } from "@/components/ui/separator"
+import type { ContentTable } from "@/lib/db"
 
 // Dayjs
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import utc from "dayjs/plugin/utc";
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import utc from "dayjs/plugin/utc"
 
-type Content = ContentTable;
+type Content = ContentTable
 
-const { id } = Astro.params;
+const { id } = Astro.params
 
-const res = await fetch(`http://localhost:3000/api/location/${id}`);
+const res = await fetch(`http://localhost:3000/api/location/${id}`)
 
-const data: Content | null = res.status === 200 ? await res.json() : null;
+const data: Content | null = res.status === 200 ? await res.json() : null
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
-dayjs.extend(utc);
+dayjs.extend(utc)
 
-// @ts-expect-error Generated<string> is string
-const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc());
+const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
 ---
 
 <Layout>

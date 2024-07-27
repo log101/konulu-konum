@@ -1,16 +1,14 @@
-import type { Generated } from "kysely"
-
 export interface Database {
   contents: ContentTable
 }
 
 export interface ContentTable {
-  id: Generated<string>
+  id: string
   url: string
   blob_url: string
   loc: string
   author: string
   description: string
-  created_at: Generated<string>
-  unlocked_counter: Generated<number>
+  created_at: string
+  unlocked_counter: number
 }

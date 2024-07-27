@@ -1,37 +1,25 @@
-import { Button } from "./ui/button"
+import { toast } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 const ShareButton = () => {
   const shareLink = async () => {
     const shareData = {
       title: "Konulu Konum",
       text: "Sevdiklerinizi şaşırtın!",
-      url: document.URL
-    }
+      url: document.URL,
+    };
 
-    await navigator.share(shareData)
-  }
+    await navigator.share(shareData);
+  };
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(document.URL)
-      // @ts-ignore
-      Toastify({
-        text: "Konulu konum kopyalandı.",
-        duration: 3000,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: "black",
-          borderRadius: "6px",
-          margin: "16px"
-        },
-        onClick: function () {} // Callback after click
-      }).showToast()
+      await navigator.clipboard.writeText(document.URL);
+      toast("Konulu konum kopyalandı.");
     } catch (err: any) {
-      console.error(err.message)
+      console.error(err.message);
     }
-  }
+  };
 
   return (
     <div>
@@ -48,7 +36,7 @@ const ShareButton = () => {
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export default ShareButton
+export default ShareButton;

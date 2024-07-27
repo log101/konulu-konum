@@ -4,8 +4,8 @@ function incrementUnlockCounter(id: string | undefined) {
   if (id) {
     fetch(`http://localhost:3000/api/location/increment/${id}`, {
       method: "PATCH",
-    });
+    })
   }
 }
 
-export { incrementUnlockCounter };
+export { incrementUnlockCounter }

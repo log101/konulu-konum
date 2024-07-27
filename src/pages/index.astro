@@ -10,17 +10,15 @@ import Layout from "../layouts/Layout.astro";
 <Layout>
   <main>
     <form
-      class="flex flex-col gap-8"
-      id="sample-form"
-      enctype="multipart/form-data"
-    >
+      class='flex flex-col gap-8'
+      id='sample-form'
+      enctype='multipart/form-data'>
       <div>
         <h1
-          class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline"
-        >
+          class='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline'>
           <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
         </h1>
-        <p class="leading-7 [&:not(:first-child)]:mt-6">
+        <p class='leading-7 [&:not(:first-child)]:mt-6'>
           3 basit adımda fotoğraflarınızı ve videolarınızı <b
             >yalnızca belirli bir konumda</b
           > açılacak şekilde kilitleyin:
@@ -29,24 +27,23 @@ import Layout from "../layouts/Layout.astro";
 
       <div>
         <h2
-          class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
-        >
+          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
           1. Fotoğraf Seçimi
         </h2>
-        <p class="leading-7 [&:not(:first-child)]:mt-6">
+        <p class='leading-7 [&:not(:first-child)]:mt-6'>
           Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
           fotoğraf yalnızca belirli bir konumda açılabilecek bir hale
           getirilecek.
         </p>
-        <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
+        <div class='grid w-full max-w-sm items-center gap-1.5 mt-4'>
           <input
-            type="file"
-            name="selected-photo"
-            id="photo-selector"
-            class="p-2 border border-gray rounded-lg file:bg-inherit file:border-0"
+            type='file'
+            name='selected-photo'
+            id='photo-selector'
+            class='p-2 border border-gray rounded-lg file:bg-inherit file:border-0'
             required
           />
-          <p class="px-2 text-sm text-muted-foreground">
+          <p class='px-2 text-sm text-muted-foreground'>
             Galerinizden bir fotoğraf seçin.
           </p>
         </div>
@@ -54,99 +51,94 @@ import Layout from "../layouts/Layout.astro";
 
       <div>
         <h2
-          class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
-        >
+          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
           2. Fotoğrafın Açılacağı Konum
         </h2>
-        <p class="leading-7 [&:not(:first-child)]:mt-6">
+        <p class='leading-7 [&:not(:first-child)]:mt-6'>
           Haritadan bir nokta seçin. Bağlantıyı gönderdiğiniz kişi bu konuma
           gittiği zaman seçtiğiniz fotoğrafı görebilecek.
         </p>
         <div>
           <div
-            id="map"
-            class="w-full h-[450px] rounded mt-4 transition-colors ease-in-out border-2 duration-300"
-          >
+            id='map'
+            class='w-full h-[450px] rounded mt-4 transition-colors ease-in-out border-2 duration-300'>
           </div>
-          <p class="text-xl mt-2">
-            <span class="font-semibold">Seçilen Konum:</span>
+          <p class='text-xl mt-2'>
+            <span class='font-semibold'>Seçilen Konum:</span>
           </p>
 
           <p
-            class="text-lg transition ease-in-out duration-700"
-            id="coordinates"
-          >
+            class='text-lg transition ease-in-out duration-700'
+            id='coordinates'>
             Henüz konum seçmediniz, konum seçmek için haritadaki bir noktaya
             basınız.
           </p>
 
           <p
-            class="text-lg text-muted-foreground mt-2"
-            id="location-selected-confirmation"
-          >
+            class='text-lg text-muted-foreground mt-2'
+            id='location-selected-confirmation'>
           </p>
         </div>
-        <input name="geolocation" id="geolocation-input" hidden />
+        <input name='geolocation' id='geolocation-input' hidden />
       </div>
 
       <div>
         <h2
-          class="mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
-        >
+          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
           3. Fotoğraf Açıklaması
         </h2>
-        <div class="grid w-full max-w-md items-center gap-2 mt-4">
-          <div class="grid w-full items-center gap-1.5">
-            <label for="location-author" class="lg:text-lg text-md">
+        <div class='grid w-full max-w-md items-center gap-2 mt-4'>
+          <div class='grid w-full items-center gap-1.5'>
+            <label for='location-author' class='lg:text-lg text-md'>
               Gönderici
             </label>
             <input
-              id="location-author"
-              name="author"
-              placeholder="İsminizi buraya yazınız."
-              class="lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400"
+              id='location-author'
+              name='author'
+              placeholder='İsminizi buraya yazınız.'
+              class='lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400'
               required
             />
           </div>
-          <div class="grid w-full items-center gap-1.5">
-            <label for="location-description" class="lg:text-lg text-md">
+          <div class='grid w-full items-center gap-1.5'>
+            <label for='location-description' class='lg:text-lg text-md'>
               Açıklama
             </label>
             <textarea
-              placeholder="Açıklamanızı buraya yazınız."
-              name="description"
-              id="location-description"
-              class="lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400 resize-none"
+              placeholder='Açıklamanızı buraya yazınız.'
+              name='description'
+              id='location-description'
+              class='lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400 resize-none'
               required></textarea>
-            <p class="text-sm text-muted-foreground">
+            <p class='text-sm text-muted-foreground'>
               Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
               görünecek.
             </p>
           </div>
         </div>
-        <div class="flex gap-2 my-6 items-center">
-          <input type="checkbox" id="kvkk" class="w-6 h-6" required />
+        <div class='flex gap-2 my-6 items-center'>
+          <input type='checkbox' id='kvkk' class='w-6 h-6' required />
           <label
-            for="kvkk"
-            class="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
+            for='kvkk'
+            class='text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
             Konulu Konum'u KVKK kapsamında dava etmeyeceğimi onaylıyorum.
           </label>
         </div>
 
         <button
-          class="w-full text-lg bg-slate-900 text-white p-2 rounded-lg"
-          type="submit"
-          id="submit-button"
-        >
+          class='w-full text-lg bg-slate-900 text-white p-2 rounded-lg'
+          type='submit'
+          id='submit-button'>
           Bağlantıyı Oluştur
         </button>
       </div>
     </form>
-    <script src="../scripts/initSelectionMap.js"></script>
+    <script src='../scripts/initSelectionMap.js'></script>
   </main>
 
   <script>
+    import { toast } from "@/lib/utils";
+
     const handleSubmit = async (e: SubmitEvent) => {
       e.preventDefault();
 
@@ -208,20 +200,7 @@ import Layout from "../layouts/Layout.astro";
 
         if (data.url) location.assign("/" + data.url);
       } else {
-        // @ts-ignore
-        Toastify({
-          text: "Konulu konum oluşturulamadı, lütfen tekrar deneyin.",
-          duration: 3000,
-          gravity: "top", // `top` or `bottom`
-          position: "center", // `left`, `center` or `right`
-          stopOnFocus: true, // Prevents dismissing of toast on hover
-          style: {
-            background: "black",
-            borderRadius: "6px",
-            margin: "16px",
-          },
-          onClick: function () {}, // Callback after click
-        }).showToast();
+        toast("Konulu konum oluşturulamadı, lütfen tekrar deneyin.");
       }
     };
 

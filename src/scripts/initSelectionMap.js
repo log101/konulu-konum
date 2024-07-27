@@ -1,119 +1,111 @@
-import { onLocationError } from "@/lib/error";
+import { onLocationError } from "@/lib/error"
+import { toast } from "@/lib/utils"
 
-var map = L.map('map').setView([41.024857599001905, 28.940787550837882], 10);
+var map = L.map("map").setView([41.024857599001905, 28.940787550837882], 10)
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-}).addTo(map);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution:
+    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+}).addTo(map)
 
-let targetLocationMarker;
+let targetLocationMarker
 
-let targetLocationCircle;
+let targetLocationCircle
 
 var targetLocationIcon = L.icon({
-    iconUrl: 'goal.svg',
-    iconSize: [32, 32],
-});
+  iconUrl: "goal.svg",
+  iconSize: [32, 32],
+})
 
 var currentLocationIcon = L.icon({
-    iconUrl: 'blue-dot.png',
-    iconSize: [32, 32],
-});
+  iconUrl: "blue-dot.png",
+  iconSize: [32, 32],
+})
 
-let currentLocationMarker;
+let currentLocationMarker
 
 function startWatchingLocation() {
-    map.locate({ watch: true })
+  map.locate({ watch: true })
 }
 
 function onLocationSuccess(locationEvent) {
-    const position = locationEvent.latlng
+  const position = locationEvent.latlng
 
-    const currentPos = {
-        lat: position.lat,
-        lng: position.lng
-    }
+  const currentPos = {
+    lat: position.lat,
+    lng: position.lng,
+  }
 
-    if (currentLocationMarker) {
-        currentLocationMarker.setLatLng(currentPos);
-    } else {
-        currentLocationMarker = L.marker(currentPos, { icon: currentLocationIcon });
-        currentLocationMarker.addTo(map);
-    }
+  if (currentLocationMarker) {
+    currentLocationMarker.setLatLng(currentPos)
+  } else {
+    currentLocationMarker = L.marker(currentPos, { icon: currentLocationIcon })
+    currentLocationMarker.addTo(map)
+  }
 }
 
-map.on('locationerror', onLocationError);
+map.on("locationerror", onLocationError)
 
-map.on('locationfound', onLocationSuccess)
+map.on("locationfound", onLocationSuccess)
 
 L.Control.AskPermisson = L.Control.extend({
-    onAdd: function (map) {
-        const locationButton = document.createElement('button');
+  onAdd: function (map) {
+    const locationButton = document.createElement("button")
 
-        locationButton.textContent = 'Konum İzni Ver';
+    locationButton.textContent = "Konum İzni Ver"
 
-        locationButton.classList.add('custom-map-control-button');
+    locationButton.classList.add("custom-map-control-button")
 
-        locationButton.type = 'button'
+    locationButton.type = "button"
 
-        locationButton.addEventListener('click', (ev) => {
-            if (locationButton.textContent != 'Konumuma Git') {
-                startWatchingLocation()
-                locationButton.textContent = 'Konumuma Git';
-            } else {
-                if (currentLocationMarker) {
-                    map.setView(currentLocationMarker.getLatLng(), 12);
-                } else {
-                    // @ts-ignore
-                    Toastify({
-                        text: 'Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin.',
-                        duration: 3000,
-                        gravity: 'top', // `top` or `bottom`
-                        position: 'center', // `left`, `center` or `right`
-                        stopOnFocus: true, // Prevents dismissing of toast on hover
-                        style: {
-                            background: 'black',
-                            borderRadius: '6px',
-                            margin: '16px',
-                        },
-                        onClick: function () { }, // Callback after click
-                    }).showToast();
-                }
+    locationButton.addEventListener("click", (ev) => {
+      if (locationButton.textContent != "Konumuma Git") {
+        startWatchingLocation()
+        locationButton.textContent = "Konumuma Git"
+      } else {
+        if (currentLocationMarker) {
+          map.setView(currentLocationMarker.getLatLng(), 12)
+        } else {
+          toast(
+            "Konum izni alınamadı, lütfen tarayıcınızın ve cihazınızın gizlilik ayarlarını kontrol edin."
+          )
+        }
+      }
+      L.DomEvent.stopPropagation(ev)
+    })
 
-            }
-            L.DomEvent.stopPropagation(ev)
-        })
-
-        return locationButton;
-    },
-});
+    return locationButton
+  },
+})
 
 L.control.askPermission = function (opts) {
-    return new L.Control.AskPermisson(opts);
-};
+  return new L.Control.AskPermisson(opts)
+}
 
-L.control.askPermission({ position: 'bottomleft' }).addTo(map);
+L.control.askPermission({ position: "bottomleft" }).addTo(map)
 
+map.on("click", (e) => {
+  if (targetLocationMarker) {
+    targetLocationMarker.setLatLng(e.latlng)
+    targetLocationCircle.setLatLng(e.latlng)
+  } else {
+    targetLocationMarker = L.marker(e.latlng, {
+      icon: targetLocationIcon,
+    }).addTo(map)
 
-map.on('click', (e) => {
-    if (targetLocationMarker) {
-        targetLocationMarker.setLatLng(e.latlng)
-        targetLocationCircle.setLatLng(e.latlng)
-    } else {
-        targetLocationMarker = L.marker(e.latlng, { icon: targetLocationIcon }).addTo(map);
+    targetLocationCircle = L.circle(e.latlng, {
+      color: "blue",
+      fillColor: "#30f",
+      fillOpacity: 0.2,
+      radius: 50,
+    }).addTo(map)
+  }
 
-        targetLocationCircle = L.circle(e.latlng, {
-            color: 'blue',
-            fillColor: '#30f',
-            fillOpacity: 0.2,
-            radius: 50
-        }).addTo(map);
-    }
-
-    const pos = targetLocationMarker.getLatLng()
-    document.getElementById('coordinates').innerText = `${pos.lat}. Enlem, ${pos.lng}. Boylam`
-    document.getElementById('geolocation-input').value = `${pos.lat},${pos.lng}`
-    document.getElementById('location-selected-confirmation').innerText = "Konum seçildi, bir sonraki adıma geçebilirsiniz."
+  const pos = targetLocationMarker.getLatLng()
+  document.getElementById("coordinates").innerText =
+    `${pos.lat}. Enlem, ${pos.lng}. Boylam`
+  document.getElementById("geolocation-input").value = `${pos.lat},${pos.lng}`
+  document.getElementById("location-selected-confirmation").innerText =
+    "Konum seçildi, bir sonraki adıma geçebilirsiniz."
 })

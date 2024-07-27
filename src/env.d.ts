@@ -5,12 +5,12 @@
 
 export declare global {
   interface Window {
-    htmx: any;
+    htmx: any
   }
 
   namespace astroHTML.JSX {
     interface HTMLAttributes {
-      _?: any;
+      _?: any
     }
   }
 }
