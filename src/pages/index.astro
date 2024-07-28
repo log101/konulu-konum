@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react"
 <Layout>
   <main>
     <form
-      class='flex flex-col gap-8'
+      class='flex flex-col gap-10'
       id='sample-form'
       enctype='multipart/form-data'>
       <div>
@@ -19,19 +19,19 @@ import { Loader2 } from "lucide-react"
           class='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline'>
           <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
         </h1>
-        <p class='leading-7 [&:not(:first-child)]:mt-6'>
+        <p class='leading-7 [&:not(:first-child)]:mt-6 text-2xl'>
           3 basit adımda fotoğraflarınızı ve videolarınızı <b
             >yalnızca belirli bir konumda</b
-          > açılacak şekilde kilitleyin:
+          > açılacak şekilde kilitleyin.
         </p>
       </div>
 
       <div>
         <h2
-          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
+          class='mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0'>
           1. Fotoğraf Seçimi
         </h2>
-        <p class='leading-7 [&:not(:first-child)]:mt-6'>
+        <p class='leading-7 [&:not(:first-child)]:mt-6 text-2xl'>
           Aşağıdaki butona basıp galerinizden bir fotoğraf seçin, seçtiğiniz
           fotoğraf yalnızca belirli bir konumda açılabilecek bir hale
           getirilecek.
@@ -44,7 +44,7 @@ import { Loader2 } from "lucide-react"
             class='p-2 border border-gray rounded-lg file:bg-inherit file:border-0'
             required
           />
-          <p class='px-2 text-sm text-muted-foreground'>
+          <p class='px-2 text-lg text-muted-foreground'>
             Galerinizden bir fotoğraf seçin.
           </p>
         </div>
@@ -52,24 +52,24 @@ import { Loader2 } from "lucide-react"
 
       <div>
         <h2
-          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
+          class='mt-10 scroll-m-20 border-b pb-2 font-semibold tracking-tight transition-colors first:mt-0 text-3xl'>
           2. Fotoğrafın Açılacağı Konum
         </h2>
-        <p class='leading-7 [&:not(:first-child)]:mt-6'>
+        <p class='leading-7 [&:not(:first-child)]:mt-6 text-2xl'>
           Haritadan bir nokta seçin. Bağlantıyı gönderdiğiniz kişi bu konuma
           gittiği zaman seçtiğiniz fotoğrafı görebilecek.
         </p>
         <div>
           <div
             id='map'
-            class='w-full h-[450px] rounded mt-4 transition-colors ease-in-out border-2 duration-300'>
+            class='w-full h-[450px] rounded mt-6 transition-colors ease-in-out border-2 duration-300'>
           </div>
-          <p class='text-xl mt-2'>
+          <p class='text-2xl mt-4 mb-2'>
             <span class='font-semibold'>Seçilen Konum:</span>
           </p>
 
           <p
-            class='text-lg transition ease-in-out duration-700'
+            class='text-xl transition ease-in-out duration-700'
             id='coordinates'>
             Henüz konum seçmediniz, konum seçmek için haritadaki bir noktaya
             basınız.
@@ -85,14 +85,12 @@ import { Loader2 } from "lucide-react"
 
       <div>
         <h2
-          class='mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0'>
+          class='mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0'>
           3. Fotoğraf Açıklaması
         </h2>
         <div class='grid w-full max-w-md items-center gap-2 mt-4'>
           <div class='grid w-full items-center gap-1.5'>
-            <label for='location-author' class='lg:text-lg text-md'>
-              Gönderici
-            </label>
+            <label for='location-author' class='text-xl'> Gönderici: </label>
             <input
               id='location-author'
               name='author'
@@ -102,8 +100,8 @@ import { Loader2 } from "lucide-react"
             />
           </div>
           <div class='grid w-full items-center gap-1.5'>
-            <label for='location-description' class='lg:text-lg text-md'>
-              Açıklama
+            <label for='location-description' class='text-xl'>
+              Açıklama:
             </label>
             <textarea
               placeholder='Açıklamanızı buraya yazınız.'
@@ -111,17 +109,17 @@ import { Loader2 } from "lucide-react"
               id='location-description'
               class='lg:text-lg text-md py-2 px-3 border border-gray rounded-lg placeholder:text-slate-400 resize-none'
               required></textarea>
-            <p class='text-sm text-muted-foreground'>
+            <p class='text-lg text-muted-foreground'>
               Bir açıklama girin, yüklediğiniz içeriğin üzerine bu metin
               görünecek.
             </p>
           </div>
         </div>
-        <div class='flex gap-2 my-6 items-center'>
+        <div class='flex gap-2 my-6 items-center mt-6'>
           <input type='checkbox' id='kvkk' class='w-6 h-6' required />
           <label
             for='kvkk'
-            class='text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+            class='text-xl font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
             Konulu Konum'u KVKK kapsamında dava etmeyeceğimi onaylıyorum.
           </label>
         </div>

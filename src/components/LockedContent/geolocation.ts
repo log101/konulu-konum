@@ -7,7 +7,7 @@ import {
   revealContent,
   toggleClass,
   updateText,
-} from "./domUtils"
+} from "../../lib/domUtils"
 import { mapLocationSuccessCallback } from "@/scripts/initMap"
 import { toast } from "@/lib/utils"
 

@@ -10,7 +10,7 @@ import {
   removeClasses,
   updateInputValue,
   updateText,
-} from "@/components/LockedContent/domUtils"
+} from "@/lib/domUtils"
 import { updateMarkerLocation } from "@/components/Leaflet/geolocation"
 
 var map = L.map("map").setView([41.024857599001905, 28.940787550837882], 10)
