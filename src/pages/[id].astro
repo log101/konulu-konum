@@ -15,7 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { Separator } from "@/components/ui/separator"
 import type { ContentTable } from "@/lib/db"
 
 // Dayjs
@@ -50,8 +49,6 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
         konuma gitmeniz gerekiyor.
       </p>
     </div>
-
-    <Separator />
 
     <Card className='w-full'>
       <CardHeader>

@@ -30,9 +30,10 @@ function addClasses(elemId: string, ...inputs: string[]) {
   else console.error("Element could not be found!")
 }
 
-function removeElement(elemId: string) {
+function removeElement(elemId: string, silent = false) {
   const elem = document.getElementById(elemId)
   if (elem) elem.remove()
+  else if (silent) return
   else console.error("Element could not be found!")
 }
 
