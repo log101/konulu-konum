@@ -40,15 +40,14 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
 
 <Layout>
   <main class='flex flex-col gap-4'>
-    <div>
+    <div class='flex flex-col'>
       <h1
         class='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline'>
         <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
       </h1>
-      <p class='leading-7 [&:not(:first-child)]:mt-6'>
-        Arkadaşınız size bir fotoğraf ve bir not bıraktı. Fakat fotoğrafı
-        görebilmeniz için aşağıdaki konuma gitmeniz gerekiyor. Konuma
-        yaklaştığınızda butona basıp fotoğrafı görüntüleyebilirsiniz.
+      <p class='[&:not(:first-child)]:mt-6 text-2xl'>
+        Size bir konulu konum bırakıldı, görüntüleyebilmek için haritadaki
+        konuma gitmeniz gerekiyor.
       </p>
     </div>
 
@@ -56,12 +55,12 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
 
     <Card className='w-full'>
       <CardHeader>
-        <CardTitle>{data?.author}</CardTitle>
+        <CardTitle className='text-2xl'>{data?.author}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className='text-xl'>
         <p>{data?.description}</p>
       </CardContent>
-      <CardFooter className='gap-2'>
+      <CardFooter className='gap-2 text-lg'>
         <CalendarIcon />
         <p>{dateFromNow}</p>
       </CardFooter>
@@ -86,8 +85,8 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
             <svg
               id='lock-icon'
               xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
+              width='28'
+              height='28'
               fill='#ffffff'
               viewBox='0 0 256 256'>
               <path
@@ -106,17 +105,17 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
                 d='M208,80H96V56a32,32,0,0,1,32-32c15.37,0,29.2,11,32.16,25.59a8,8,0,0,0,15.68-3.18C171.32,24.15,151.2,8,128,8A48.05,48.05,0,0,0,80,56V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm0,128H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z'
               ></path>
             </svg>
-            <p id='button-text'>İçerik Kilitli</p>
+            <p id='button-text' class='text-xl'>İçerik Kilitli</p>
           </button>
           <div
             class='rounded-lg border bg-card text-card-foreground shadow-sm p-2'>
             <div class='pb-0 text-center flex flex-col gap-4'>
-              <p id='locked-content-description'>
+              <p id='locked-content-description' class='text-xl'>
                 Ne kadar yaklaştığını görmek için aşağıdaki butona bas.
               </p>
               <button
                 id='location-permission-button'
-                class='inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-9 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md'>
+                class='text-xl inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 rounded-md px-3 bg-green-700 hover:bg-green-600 text-md'>
                 Konum İzni Ver
               </button>
             </div>
