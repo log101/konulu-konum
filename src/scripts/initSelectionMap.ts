@@ -54,7 +54,6 @@ const CurrentLocationControl = L.Control.extend({
     locationButton.id = "current-location-control"
 
     locationButton.addEventListener("click", (ev) => {
-      console.log(currentLocationMarker)
       if (currentLocationMarker) {
         map.setView(currentLocationMarker.getLatLng(), 12)
       } else {
@@ -116,10 +115,18 @@ map.on("click", (e) => {
   }
 
   const pos = targetLocationMarker.getLatLng()
-  updateText("coordinates", `${pos.lat}. Enlem, ${pos.lng}. Boylam`)
   updateInputValue("geolocation-input", `${pos.lat},${pos.lng}`)
+  updateText("coordinates", `${pos.lat}. Enlem, ${pos.lng}. Boylam`)
   updateText(
     "location-selected-confirmation",
     "Konum seçildi, bir sonraki adıma geçebilirsiniz."
   )
 })
+
+const geolocationInputEl = document.getElementById(
+  "geolocation-input"
+) as HTMLInputElement | null
+
+if (geolocationInputEl?.value) {
+  geolocationInputEl.value = ""
+}

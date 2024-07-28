@@ -4,10 +4,6 @@
 /// <reference types="@types/leaflet" />
 
 export declare global {
-  interface Window {
-    htmx: any
-  }
-
   namespace astroHTML.JSX {
     interface HTMLAttributes {
       _?: any

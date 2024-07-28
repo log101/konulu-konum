@@ -24,7 +24,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
-    "htmx.org": "^1.9.12",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.309.0",
     "react": "^18.3.1",

@@ -1,19 +1,13 @@
+import {
+  currentLocationIcon,
+  targetLocationIcon,
+} from "@/components/Leaflet/icons"
 import { toast } from "@/lib/utils"
 import L from "leaflet"
 
 type TargetLocation = [lat: number, lng: number] | null
 
 const mapEl = document.getElementById("map")
-
-var targetLocationIcon = L.icon({
-  iconUrl: "goal.svg",
-  iconSize: [32, 32],
-})
-
-var currentLocationIcon = L.icon({
-  iconUrl: "blue-dot.png",
-  iconSize: [32, 32],
-})
 
 const targetLocation = mapEl?.dataset.targetLocation
 
@@ -108,10 +102,6 @@ function addTargetLocationMarker(target: TargetLocation) {
   }
 }
 
-function initLocationControls() {
-  targetLocationControl.addTo(map)
-  goToCurrentLocationControl.addTo(map)
-}
-
 addTargetLocationMarker(TARGET_LOCATION)
-initLocationControls()
+targetLocationControl.addTo(map)
+goToCurrentLocationControl.addTo(map)
