@@ -1,0 +1,90 @@
+run-name: ${{ gitea.actor }}, deploy with ssh
+on:
+  push:
+    branches:
+      - "release"
+
+env:
+  BUILD_PATH: "."
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect package manager
+        id: detect-package-manager
+        run: |
+          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=yarn" >> $GITHUB_OUTPUT
+            echo "lockfile=yarn.lock" >> $GITHUB_OUTPUT
+            exit 0
+          elif [ -f "${{ github.workspace }}/package.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            echo "lockfile=package-lock.json" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Unable to determine package manager"
+            exit 1
+          fi
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache-dependency-path:
+            ${{ env.BUILD_PATH }}/${{
+            steps.detect-package-manager.outputs.lockfile }}
+      - name: Install dependencies
+        run:
+          ${{ steps.detect-package-manager.outputs.manager }} ${{
+          steps.detect-package-manager.outputs.command }}
+        working-directory: ${{ env.BUILD_PATH }}
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_PUBLIC_BACKEND_HOST: ${{ vars.PUBLIC_BACKEND_HOST }}
+      - name: Build with Astro
+        run: |
+          ${{ steps.detect-package-manager.outputs.runner }} astro build
+        working-directory: ${{ env.BUILD_PATH }}
+      - name: Deploy to my server
+        id: deploy
+        uses: up9cloud/action-rsync@master
+        env:
+          USER: ${{ secrets.USERNAME }}
+          HOST: ${{ secrets.HOST }}
+          KEY: ${{ secrets.KEY }}
+          SOURCE: ./dist/
+          TARGET: ${{ secrets.DESTINATION_FOLDER }}
+
+          ARGS: -avz --exclude=/.git/
+          SSH_ARGS:
+            "-p 22 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+          VERBOSE: true
+
+          PRE_SCRIPT: |
+            echo start at:
+            date -u
+          POST_SCRIPT: "echo done at: && date -u"
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        if: ${{ always() }}
+        with:
+          server_address: mail.log101.dev
+          server_port: 465
+          secure: true
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Actions job result
+          to: ffrknerdm@gmail.com
+          from: gitea@log101.dev
+          body:
+            Build job of ${{github.repository}} completed with status ${{
+            steps.deploy.outcome }}!
