@@ -9,5 +9,6 @@ export default defineConfig({
   integrations: [react(), tailwind({
     applyBaseStyles: false
   })],
-  output: "static"
+  output: "static",
+  site: "https://konulukonum.log101.dev"
 });

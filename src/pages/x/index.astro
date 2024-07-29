@@ -22,7 +22,7 @@ import { CalendarIcon } from "@radix-ui/react-icons"
     <div class='flex flex-col'>
       <h1
         class='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl hover:underline'>
-        <a href=`${import.meta.env.PUBLIC_HOME_URL}`> Konulu Konum</a>
+        <a href=`${import.meta.env.SITE}`> Konulu Konum</a>
       </h1>
       <p class='[&:not(:first-child)]:mt-6 text-2xl'>
         Size bir konulu konum bırakıldı, görüntüleyebilmek için haritadaki
@@ -125,7 +125,9 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 
     type Content = ContentTable
 
-    const res = await fetch(`http://localhost:3000/api/location/${id}`)
+    const res = await fetch(
+      `${import.meta.env.PUBLIC_BACKEND_URL}/api/location/${id}`
+    )
 
     const data: Content | null = res.status === 200 ? await res.json() : null
 
@@ -153,7 +155,8 @@ import { CalendarIcon } from "@radix-ui/react-icons"
     const content = document.getElementById(
       "content"
     ) as HTMLImageElement | null
-    if (content) content.src = `http://localhost:3000/images/${data?.blob_url}`
+    if (content)
+      content.src = `${import.meta.env.PUBLIC_BACKEND_URL}/images/${data?.blob_url}`
 
     const counter = document.getElementById("counter")
     if (counter) counter.innerText = data?.unlocked_counter.toString() ?? ""
