@@ -1,12 +1,12 @@
 import L from "leaflet"
 
 var targetLocationIcon = L.icon({
-  iconUrl: "goal.svg",
+  iconUrl: "https://konulukonum.log101.dev/goal.svg",
   iconSize: [32, 32],
 })
 
 var currentLocationIcon = L.icon({
-  iconUrl: "blue-dot.png",
+  iconUrl: "https://konulukonum.log101.dev/blue-dot.png",
   iconSize: [32, 32],
 })
 
