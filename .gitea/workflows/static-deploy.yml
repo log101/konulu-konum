@@ -53,7 +53,7 @@ jobs:
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v2.0
         with:
-          envkey_PUBLIC_BACKEND_HOST: ${{ vars.PUBLIC_BACKEND_HOST }}
+          envkey_PUBLIC_BACKEND_HOST: ${{ vars.PUBLIC_BACKEND_URL }}
       - name: Build with Astro
         run: |
           ${{ steps.detect-package-manager.outputs.runner }} astro build
@@ -77,18 +77,3 @@ jobs:
             echo start at:
             date -u
           POST_SCRIPT: "echo done at: && date -u"
-      - name: Send email notification
-        uses: dawidd6/action-send-mail@v3
-        if: ${{ always() }}
-        with:
-          server_address: mail.log101.dev
-          server_port: 465
-          secure: true
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Github Actions job result
-          to: ffrknerdm@gmail.com
-          from: gitea@log101.dev
-          body:
-            Build job of ${{github.repository}} completed with status ${{
-            steps.deploy.outcome }}!
