@@ -44,10 +44,13 @@ const handleSubmit = async (e: SubmitEvent) => {
 
   const formData = new FormData(e.target as HTMLFormElement)
 
-  const res = await fetch(`https://konulukonum.log101.dev/api/location`, {
-    method: "POST",
-    body: formData,
-  })
+  const res = await fetch(
+    `${import.meta.env.PUBLIC_BACKEND_URL}/api/location`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  )
 
   if (res.status === 200) {
     const data = await res.json()
