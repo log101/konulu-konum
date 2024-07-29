@@ -33,6 +33,10 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
