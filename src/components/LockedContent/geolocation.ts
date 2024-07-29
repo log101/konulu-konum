@@ -61,7 +61,7 @@ function locationSuccessCallback(
     updateText("locked-content-description", `Kalan mesafe: ${distanceText}`)
   }
 
-  removeElement("location-permission-button")
+  removeElement("location-permission-button", true)
 
   // Update leaflet controls
   mapLocationSuccessCallback(position)

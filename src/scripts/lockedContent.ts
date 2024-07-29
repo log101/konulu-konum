@@ -29,15 +29,26 @@ locationPermissionButton.addEventListener("click", startWatchingLocation)
 
 lockedContentContainer.addEventListener("askpermission", startWatchingLocation)
 
-const targetPositionString = lockedContentContainer.dataset.targetPosition
+// Get target position from container's dataset
+function getTargetPosition() {
+  const lockedContentContainer = document.getElementById(
+    "locked-content-container"
+  )
 
-// TARGET_POSITION is required to calculate distance
-if (!targetPositionString) throw new Error("Target position is not provided!")
+  const targetPositionString = lockedContentContainer?.dataset.targetPosition
 
-const TARGET_POSITION = JSON.parse(targetPositionString) as LatLngTuple
+  // TARGET_POSITION is required to calculate distance
+  if (!targetPositionString) throw new Error("Target position is not provided!")
+
+  const data = JSON.parse(targetPositionString) as LatLngTuple
+
+  return data
+}
 
 // Call Geolocation API to start watching user location
 function startWatchingLocation() {
+  const TARGET_POSITION = getTargetPosition()
+
   if (!watchId) {
     watchId = window.navigator.geolocation.watchPosition(
       (position) => locationSuccessCallback(position, TARGET_POSITION),
@@ -53,6 +64,7 @@ navigator.permissions
   .then((permissionStatus) => {
     switch (permissionStatus.state) {
       case "granted":
+        const TARGET_POSITION = getTargetPosition()
         watchId = window.navigator.geolocation.watchPosition(
           (position) => locationSuccessCallback(position, TARGET_POSITION),
           errorCallback

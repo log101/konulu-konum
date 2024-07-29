@@ -1,12 +1,12 @@
 ---
 // Styles
 import "@/styles/globals.css"
-import "../styles/locked-page.css"
-import "../styles/locked-content.css"
+import "@/styles/locked-page.css"
+import "@/styles/locked-content.css"
 
 // Components
-import Layout from "../layouts/Layout.astro"
-import ShareButton from "../components/ShareButton"
+import Layout from "@/layouts/Layout.astro"
+import ShareButton from "@/components/ShareButton"
 import {
   Card,
   CardContent,
@@ -15,26 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import type { ContentTable } from "@/lib/db"
-
-// Dayjs
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
-import utc from "dayjs/plugin/utc"
-
-type Content = ContentTable
-
-const { id } = Astro.params
-
-const res = await fetch(`http://localhost:3000/api/location/${id}`)
-
-const data: Content | null = res.status === 200 ? await res.json() : null
-
-dayjs.extend(relativeTime)
-
-dayjs.extend(utc)
-
-const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
 ---
 
 <Layout>
@@ -52,25 +32,24 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
 
     <Card className='w-full'>
       <CardHeader>
-        <CardTitle className='text-2xl'>{data?.author}</CardTitle>
+        <CardTitle className='text-2xl' id='card-title' />
       </CardHeader>
       <CardContent className='text-xl'>
-        <p>{data?.description}</p>
+        <p id='card-description'></p>
       </CardContent>
       <CardFooter className='gap-2 text-lg'>
         <CalendarIcon />
-        <p>{dateFromNow}</p>
+        <p id='card-footer'></p>
       </CardFooter>
     </Card>
 
     <div
       id='locked-content-container'
-      data-target-position={data?.loc}
       class='w-full h-[475px] overflow-hidden border border-zinc-200 shadow-sm p-4 rounded'>
       <div class='flex flex-col justify-center items-center image-wrapper'>
         <img
           id='content'
-          src={`http://localhost:3000/images/${data?.blob_url}`}
+          src='#'
           class='h-[450px] blur-2xl transition-all duration-1000'
         />
         <div
@@ -121,19 +100,64 @@ const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
       </div>
     </div>
 
-    <div
-      id='map'
-      class='w-full h-[450px] rounded'
-      data-target-location={data?.loc}>
-    </div>
-
+    <div id='map' class='w-full h-[450px] rounded'></div>
     <ShareButton client:only />
     <div class='flex justify-center'>
       <p class='text-muted-foreground'>
-        Fotoğrafın kilidi şu ana dek <b>{data?.unlocked_counter}</b> kez açıldı
+        Fotoğrafın kilidi şu ana dek <b id='counter'></b> kez açıldı
       </p>
     </div>
   </main>
-  <script src='../scripts/initMap.ts'></script>
-  <script src='../scripts/lockedContent.ts'></script>
+  <script>
+    import type { ContentTable } from "@/lib/db"
+    import { updateText } from "@/lib/domUtils"
+
+    // Dayjs
+    import dayjs from "dayjs"
+    import relativeTime from "dayjs/plugin/relativeTime"
+    import utc from "dayjs/plugin/utc"
+
+    // Map
+    import { initMap } from "@/scripts/initMap"
+
+    const url = new URL(document.URL).searchParams
+    const id = url.get("id")
+
+    type Content = ContentTable
+
+    const res = await fetch(`http://localhost:3000/api/location/${id}`)
+
+    const data: Content | null = res.status === 200 ? await res.json() : null
+
+    dayjs.extend(relativeTime)
+
+    dayjs.extend(utc)
+
+    const dateFromNow = dayjs.utc(data?.created_at).from(dayjs.utc())
+
+    updateText("card-title", data?.author ?? "")
+    updateText("card-description", data?.description ?? "")
+    updateText("card-footer", dateFromNow)
+
+    const lockedContentContainer = document.getElementById(
+      "locked-content-container"
+    )
+    if (lockedContentContainer)
+      lockedContentContainer.dataset.targetPosition = data?.loc
+
+    const leafletMap = document.getElementById("map")
+    if (leafletMap) leafletMap.dataset.targetLocation = data?.loc
+
+    initMap()
+
+    const content = document.getElementById(
+      "content"
+    ) as HTMLImageElement | null
+    if (content) content.src = `http://localhost:3000/images/${data?.blob_url}`
+
+    const counter = document.getElementById("counter")
+    if (counter) counter.innerText = data?.unlocked_counter.toString() ?? ""
+  </script>
+  <script src='@/scripts/initMap.ts'></script>
+  <script src='@/scripts/lockedContent.ts'></script>
 </Layout>

@@ -5,25 +5,10 @@ import {
 import { toast } from "@/lib/utils"
 import L from "leaflet"
 
-type TargetLocation = [lat: number, lng: number] | null
-
+var map: L.Map
 const mapEl = document.getElementById("map")
 
-const targetLocation = mapEl?.dataset.targetLocation
-
-const data = targetLocation ? JSON.parse(targetLocation) : null
-
-const TARGET_LOCATION = data as TargetLocation
-
-var map = L.map("map")
-
-if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 13)
-
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  attribution:
-    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-}).addTo(map)
+type TargetLocation = [lat: number, lng: number] | null
 
 let currentLocationMarker: L.Marker
 
@@ -74,7 +59,8 @@ const GoToTargetLocation = L.Control.extend({
     locationButton.classList.add("custom-map-control-button")
 
     locationButton.addEventListener("click", () => {
-      if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 12)
+      const targetLocation = getTargetLocation()
+      if (targetLocation) map.setView(targetLocation, 12)
     })
 
     return locationButton
@@ -102,6 +88,32 @@ function addTargetLocationMarker(target: TargetLocation) {
   }
 }
 
-addTargetLocationMarker(TARGET_LOCATION)
-targetLocationControl.addTo(map)
-goToCurrentLocationControl.addTo(map)
+function getTargetLocation(): TargetLocation | null {
+  const targetLocation = mapEl?.dataset.targetLocation
+
+  const data = targetLocation ? JSON.parse(targetLocation) : null
+
+  return data
+}
+
+export function initMap() {
+  map = L.map("map")
+
+  const targetLocation = mapEl?.dataset.targetLocation
+
+  const data = targetLocation ? JSON.parse(targetLocation) : null
+
+  const TARGET_LOCATION = data as TargetLocation
+
+  if (TARGET_LOCATION) map.setView(TARGET_LOCATION, 13)
+
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map)
+
+  addTargetLocationMarker(TARGET_LOCATION)
+  targetLocationControl.addTo(map)
+  goToCurrentLocationControl.addTo(map)
+}

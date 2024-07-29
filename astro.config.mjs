@@ -9,8 +9,5 @@ export default defineConfig({
   integrations: [react(), tailwind({
     applyBaseStyles: false
   })],
-  output: "server",
-  adapter: node({
-    mode: "standalone"
-  }),
+  output: "static"
 });
