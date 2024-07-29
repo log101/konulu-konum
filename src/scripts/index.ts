@@ -52,7 +52,7 @@ const handleSubmit = async (e: SubmitEvent) => {
   if (res.status === 200) {
     const data = await res.json()
 
-    if (data.url) location.assign(`/x?id="${data.url}"`)
+    if (data.url) location.assign(`/x?id=${data.url}`)
   } else {
     toast("Konulu konum oluşturulamadı, lütfen tekrar deneyin.")
   }
