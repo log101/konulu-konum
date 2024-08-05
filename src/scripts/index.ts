@@ -16,7 +16,6 @@ export function toggleMap() {
 }
 
 const handleSubmit = async (e: SubmitEvent) => {
-  e.preventDefault()
   toggleButton("submit-button", "submit-button-spinner")
   const locationSelected = document.getElementById(
     "geolocation-input"
@@ -41,27 +40,14 @@ const handleSubmit = async (e: SubmitEvent) => {
   }
 
   validateFileInput(inputEl)
-
-  const formData = new FormData(e.target as HTMLFormElement)
-
-  const res = await fetch(
-    `${import.meta.env.PUBLIC_BACKEND_URL}/api/location`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  )
-
-  if (res.status === 200) {
-    const data = await res.json()
-
-    if (data.url) location.assign(`/x?id=${data.url}`)
-  } else {
-    toast("Konulu konum oluşturulamadı, lütfen tekrar deneyin.")
-  }
 }
 
 document.getElementById("sample-form")!.onsubmit = handleSubmit
 
 document.getElementById("photo-selector")!.oninput = (ev) =>
   validateFileInput(ev.target as HTMLInputElement)
+
+const url = new URL(document.URL)
+
+if (url.searchParams.get("error"))
+  toast("Konulu konum oluşturulamadı, lütfen tekrar deneyin.")
