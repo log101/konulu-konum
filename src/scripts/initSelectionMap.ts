@@ -167,6 +167,10 @@ const DiameterControl = L.Control.extend({
       targetLocationCircle.setRadius(targetLocationCircleRadius)
 
       diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+      updateInputValue(
+        "geolocation-diameter-input",
+        targetLocationCircleRadius.toString()
+      )
       L.DomEvent.stop(ev)
     })
 
@@ -181,6 +185,10 @@ const DiameterControl = L.Control.extend({
       )
       targetLocationCircle.setRadius(targetLocationCircleRadius)
       diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+      updateInputValue(
+        "geolocation-diameter-input",
+        targetLocationCircleRadius.toString()
+      )
 
       L.DomEvent.stop(ev)
     })
