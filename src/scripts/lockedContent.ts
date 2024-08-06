@@ -45,13 +45,27 @@ function getTargetPosition() {
   return data
 }
 
+function getRadius() {
+  const leafletMap = document.getElementById("map")
+
+  let targetRadiusString = leafletMap?.dataset.targetRadius
+
+  // TARGET_POSITION is required to calculate distance
+  if (!targetRadiusString) targetRadiusString = "50"
+
+  const data = Number(targetRadiusString)
+
+  return data
+}
+
 // Call Geolocation API to start watching user location
 function startWatchingLocation() {
   const TARGET_POSITION = getTargetPosition()
+  const radius = getRadius()
 
   if (!watchId) {
     watchId = window.navigator.geolocation.watchPosition(
-      (position) => locationSuccessCallback(position, TARGET_POSITION),
+      (position) => locationSuccessCallback(position, TARGET_POSITION, radius),
       errorCallback
     )
   }
@@ -65,8 +79,10 @@ navigator.permissions
     switch (permissionStatus.state) {
       case "granted":
         const TARGET_POSITION = getTargetPosition()
+        const radius = getRadius()
         watchId = window.navigator.geolocation.watchPosition(
-          (position) => locationSuccessCallback(position, TARGET_POSITION),
+          (position) =>
+            locationSuccessCallback(position, TARGET_POSITION, radius),
           errorCallback
         )
         break

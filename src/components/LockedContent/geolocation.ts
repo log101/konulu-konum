@@ -14,7 +14,8 @@ import { toast } from "@/lib/utils"
 // Update the elements according to distance remaining
 function locationSuccessCallback(
   position: GeolocationPosition,
-  targetPosition: LatLngTuple
+  targetPosition: LatLngTuple,
+  radius: number
 ) {
   // Enable current location control
   removeClasses("current-location-control", "disabled-button")
@@ -27,7 +28,7 @@ function locationSuccessCallback(
   )
 
   // If user has arrived to destination
-  if (distance < 100) {
+  if (distance < radius) {
     // Change the description texts
     updateText("button-text", "İçeriği Göster")
     updateText("locked-content-description", "İçeriği görmek için butona bas!")
