@@ -75,7 +75,7 @@ const targetLocationControl = new GoToTargetLocation({
   position: "bottomleft",
 })
 
-function addTargetLocationMarker(target: TargetLocation) {
+function addTargetLocationMarker(target: TargetLocation, radius = 50) {
   if (target) {
     L.marker(target, { icon: targetLocationIcon }).addTo(map)
 
@@ -83,7 +83,7 @@ function addTargetLocationMarker(target: TargetLocation) {
       color: "blue",
       fillColor: "#30f",
       fillOpacity: 0.2,
-      radius: 50,
+      radius,
     }).addTo(map)
   }
 }
@@ -100,6 +100,7 @@ export function initMap() {
   map = L.map("map")
 
   const targetLocation = mapEl?.dataset.targetLocation
+  const targetRadius = mapEl?.dataset.targetRadius
 
   const data = targetLocation ? JSON.parse(targetLocation) : null
 
@@ -113,7 +114,7 @@ export function initMap() {
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map)
 
-  addTargetLocationMarker(TARGET_LOCATION)
+  addTargetLocationMarker(TARGET_LOCATION, Number(targetRadius))
   targetLocationControl.addTo(map)
   goToCurrentLocationControl.addTo(map)
 }

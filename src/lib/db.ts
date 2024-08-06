@@ -10,5 +10,6 @@ export interface ContentTable {
   author: string
   description: string
   created_at: string
+  radius: number
   unlocked_counter: number
 }

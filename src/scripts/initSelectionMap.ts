@@ -89,11 +89,11 @@ const AskPermissonControl = L.Control.extend({
   },
 })
 
-const DiameterControl = L.Control.extend({
+const RadiusControl = L.Control.extend({
   onAdd: function (map: L.Map) {
-    const diameterContainer = document.createElement("div")
+    const radiusContainer = document.createElement("div")
 
-    diameterContainer.classList.add(
+    radiusContainer.classList.add(
       "bg-white",
       "h-[40px]",
       "p-2",
@@ -102,7 +102,7 @@ const DiameterControl = L.Control.extend({
       "gap-2"
     )
 
-    const diameterButtonClasses = [
+    const radiusButtonClasses = [
       "text-xl",
       "border-2",
       "border-slate-700",
@@ -115,89 +115,79 @@ const DiameterControl = L.Control.extend({
       "hover:bg-gray-300",
     ]
 
-    const diameterIncreaseButton = document.createElement("button")
+    const radiusIncreaseButton = document.createElement("button")
 
-    diameterIncreaseButton.classList.add(...diameterButtonClasses)
+    radiusIncreaseButton.classList.add(...radiusButtonClasses)
 
-    const diameterDecreaseButton = document.createElement("button")
+    const radiusDecreaseButton = document.createElement("button")
 
-    diameterIncreaseButton.type = "button"
+    radiusIncreaseButton.type = "button"
 
-    diameterDecreaseButton.type = "button"
+    radiusDecreaseButton.type = "button"
 
-    diameterDecreaseButton.classList.add(...diameterButtonClasses)
+    radiusDecreaseButton.classList.add(...radiusButtonClasses)
 
-    const diameterContainerText = document.createElement("p")
+    const radiusContainerText = document.createElement("p")
 
-    const diameterText = document.createElement("p")
+    const radiusText = document.createElement("p")
 
-    diameterContainerText.classList.add("text-xl")
+    radiusContainerText.classList.add("text-xl")
 
-    diameterText.classList.add("text-xl")
+    radiusText.classList.add("text-xl")
 
-    diameterIncreaseButton.textContent = "+"
+    radiusIncreaseButton.textContent = "+"
 
-    diameterDecreaseButton.textContent = "-"
+    radiusDecreaseButton.textContent = "-"
 
-    diameterContainerText.textContent = "Çap: "
+    radiusContainerText.textContent = "Çap: "
 
-    diameterText.textContent = `${targetLocationCircleRadius.toString()}m`
+    radiusText.textContent = `${targetLocationCircleRadius.toString()}m`
 
-    diameterContainer.insertAdjacentElement(
-      "afterbegin",
-      diameterIncreaseButton
-    )
+    radiusContainer.insertAdjacentElement("afterbegin", radiusIncreaseButton)
 
-    diameterContainer.insertAdjacentElement("afterbegin", diameterText)
+    radiusContainer.insertAdjacentElement("afterbegin", radiusText)
 
-    diameterContainer.insertAdjacentElement(
-      "afterbegin",
-      diameterDecreaseButton
-    )
+    radiusContainer.insertAdjacentElement("afterbegin", radiusDecreaseButton)
 
-    diameterContainer.insertAdjacentElement("afterbegin", diameterContainerText)
+    radiusContainer.insertAdjacentElement("afterbegin", radiusContainerText)
 
-    diameterContainer.id = "diameter-control"
+    radiusContainer.id = "radius-control"
 
-    L.DomEvent.on(diameterIncreaseButton, "click", (ev) => {
+    L.DomEvent.on(radiusIncreaseButton, "click", (ev) => {
       targetLocationCircleRadius = Math.min(
         targetLocationCircleRadius + 100,
         2000
       )
       targetLocationCircle.setRadius(targetLocationCircleRadius)
 
-      diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+      radiusText.innerText = `${targetLocationCircleRadius.toString()}m`
       updateInputValue(
-        "geolocation-diameter-input",
+        "geolocation-radius-input",
         targetLocationCircleRadius.toString()
       )
       L.DomEvent.stop(ev)
     })
 
-    L.DomEvent.on(diameterIncreaseButton, "dblclick", (ev) =>
-      L.DomEvent.stop(ev)
-    )
+    L.DomEvent.on(radiusIncreaseButton, "dblclick", (ev) => L.DomEvent.stop(ev))
 
-    L.DomEvent.on(diameterDecreaseButton, "click", (ev) => {
+    L.DomEvent.on(radiusDecreaseButton, "click", (ev) => {
       targetLocationCircleRadius = Math.max(
         targetLocationCircleRadius - 100,
         50
       )
       targetLocationCircle.setRadius(targetLocationCircleRadius)
-      diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+      radiusText.innerText = `${targetLocationCircleRadius.toString()}m`
       updateInputValue(
-        "geolocation-diameter-input",
+        "geolocation-radius-input",
         targetLocationCircleRadius.toString()
       )
 
       L.DomEvent.stop(ev)
     })
 
-    L.DomEvent.on(diameterDecreaseButton, "dblclick", (ev) =>
-      L.DomEvent.stop(ev)
-    )
+    L.DomEvent.on(radiusDecreaseButton, "dblclick", (ev) => L.DomEvent.stop(ev))
 
-    return diameterContainer
+    return radiusContainer
   },
 })
 
@@ -207,7 +197,7 @@ const currentLocationControl = new CurrentLocationControl({
   position: "bottomleft",
 })
 
-const diameterControl = new DiameterControl({ position: "bottomright" })
+const radiusControl = new RadiusControl({ position: "bottomright" })
 
 askPermissionControl.addTo(map)
 
@@ -229,7 +219,7 @@ map.on("click", (e) => {
       radius: targetLocationCircleRadius,
     }).addTo(map)
 
-    diameterControl.addTo(map)
+    radiusControl.addTo(map)
   }
 
   const pos = targetLocationMarker.getLatLng()

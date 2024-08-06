@@ -144,11 +144,15 @@ import { CalendarIcon } from "@radix-ui/react-icons"
     const lockedContentContainer = document.getElementById(
       "locked-content-container"
     )
-    if (lockedContentContainer)
+    if (lockedContentContainer) {
       lockedContentContainer.dataset.targetPosition = data?.loc
+    }
 
     const leafletMap = document.getElementById("map")
-    if (leafletMap) leafletMap.dataset.targetLocation = data?.loc
+    if (leafletMap) {
+      leafletMap.dataset.targetLocation = data?.loc
+      leafletMap.dataset.targetRadius = data?.radius.toString() ?? "50"
+    }
 
     initMap()
 
