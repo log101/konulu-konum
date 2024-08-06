@@ -21,6 +21,8 @@ let targetLocationMarker: L.Marker
 
 let targetLocationCircle: L.Circle
 
+let targetLocationCircleRadius = 50
+
 let currentLocationMarker: L.Marker
 
 map.on("locationerror", () =>
@@ -87,11 +89,117 @@ const AskPermissonControl = L.Control.extend({
   },
 })
 
+const DiameterControl = L.Control.extend({
+  onAdd: function (map: L.Map) {
+    const diameterContainer = document.createElement("div")
+
+    diameterContainer.classList.add(
+      "bg-white",
+      "h-[40px]",
+      "p-2",
+      "flex",
+      "items-center",
+      "gap-2"
+    )
+
+    const diameterButtonClasses = [
+      "text-xl",
+      "border-2",
+      "border-slate-700",
+      "max-h-[30px]",
+      "flex",
+      "items-center",
+      "p-2",
+      "rounded-lg",
+      "bg-gray-100",
+      "hover:bg-gray-300",
+    ]
+
+    const diameterIncreaseButton = document.createElement("button")
+
+    diameterIncreaseButton.classList.add(...diameterButtonClasses)
+
+    const diameterDecreaseButton = document.createElement("button")
+
+    diameterIncreaseButton.type = "button"
+
+    diameterDecreaseButton.type = "button"
+
+    diameterDecreaseButton.classList.add(...diameterButtonClasses)
+
+    const diameterContainerText = document.createElement("p")
+
+    const diameterText = document.createElement("p")
+
+    diameterContainerText.classList.add("text-xl")
+
+    diameterText.classList.add("text-xl")
+
+    diameterIncreaseButton.textContent = "+"
+
+    diameterDecreaseButton.textContent = "-"
+
+    diameterContainerText.textContent = "Çap: "
+
+    diameterText.textContent = `${targetLocationCircleRadius.toString()}m`
+
+    diameterContainer.insertAdjacentElement(
+      "afterbegin",
+      diameterIncreaseButton
+    )
+
+    diameterContainer.insertAdjacentElement("afterbegin", diameterText)
+
+    diameterContainer.insertAdjacentElement(
+      "afterbegin",
+      diameterDecreaseButton
+    )
+
+    diameterContainer.insertAdjacentElement("afterbegin", diameterContainerText)
+
+    diameterContainer.id = "diameter-control"
+
+    L.DomEvent.on(diameterIncreaseButton, "click", (ev) => {
+      targetLocationCircleRadius = Math.min(
+        targetLocationCircleRadius + 100,
+        2000
+      )
+      targetLocationCircle.setRadius(targetLocationCircleRadius)
+
+      diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+      L.DomEvent.stop(ev)
+    })
+
+    L.DomEvent.on(diameterIncreaseButton, "dblclick", (ev) =>
+      L.DomEvent.stop(ev)
+    )
+
+    L.DomEvent.on(diameterDecreaseButton, "click", (ev) => {
+      targetLocationCircleRadius = Math.max(
+        targetLocationCircleRadius - 100,
+        50
+      )
+      targetLocationCircle.setRadius(targetLocationCircleRadius)
+      diameterText.innerText = `${targetLocationCircleRadius.toString()}m`
+
+      L.DomEvent.stop(ev)
+    })
+
+    L.DomEvent.on(diameterDecreaseButton, "dblclick", (ev) =>
+      L.DomEvent.stop(ev)
+    )
+
+    return diameterContainer
+  },
+})
+
 const askPermissionControl = new AskPermissonControl({ position: "bottomleft" })
 
 const currentLocationControl = new CurrentLocationControl({
   position: "bottomleft",
 })
+
+const diameterControl = new DiameterControl({ position: "bottomright" })
 
 askPermissionControl.addTo(map)
 
@@ -110,8 +218,10 @@ map.on("click", (e) => {
       color: "blue",
       fillColor: "#30f",
       fillOpacity: 0.2,
-      radius: 50,
+      radius: targetLocationCircleRadius,
     }).addTo(map)
+
+    diameterControl.addTo(map)
   }
 
   const pos = targetLocationMarker.getLatLng()
