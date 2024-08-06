@@ -139,7 +139,7 @@ const RadiusControl = L.Control.extend({
 
     radiusDecreaseButton.textContent = "-"
 
-    radiusContainerText.textContent = "Çap: "
+    radiusContainerText.textContent = "Yarıçap: "
 
     radiusText.textContent = `${targetLocationCircleRadius.toString()}m`
 
