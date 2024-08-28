@@ -10,5 +10,5 @@ export default defineConfig({
     applyBaseStyles: false
   })],
   output: "static",
-  site: devMode ? "http://localhost:4321" : "https://konulukonum.log101.dev"
+  site: devMode ? "http://localhost:4321" : "https://konulukonum.com"
 });
