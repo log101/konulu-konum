@@ -197,7 +197,7 @@ const currentLocationControl = new CurrentLocationControl({
   position: "bottomleft",
 })
 
-const radiusControl = new RadiusControl({ position: "bottomright" })
+const radiusControl = new RadiusControl({ position: "topright" })
 
 askPermissionControl.addTo(map)
 
