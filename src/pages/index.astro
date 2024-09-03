@@ -36,12 +36,12 @@ const backendUrl = import.meta.env.PUBLIC_BACKEND_URL
         <p class='leading-7 [&:not(:first-child)]:mt-6 text-2xl'>
           Bir fotoğraf seçin.
         </p>
-        <div class='grid w-full max-w-sm items-center gap-1.5 mt-4'>
+        <div class='grid items-center gap-1.5 mt-4'>
           <input
             type='file'
             name='selected-photo'
             id='photo-selector'
-            class='p-2 border border-gray rounded-lg file:bg-inherit file:border-0'
+            class='flex w-full p-2 border border-gray rounded-lg file:bg-inherit file:border-0'
             required
           />
           <p class='px-2 text-lg text-muted-foreground'>
